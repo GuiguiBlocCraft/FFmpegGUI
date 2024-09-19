@@ -37,7 +37,7 @@ internal class Render
     public int SetBitrate()
     {
         var p = new Process();
-        p.StartInfo.FileName = "ffprobe.exe";
+        p.StartInfo.FileName = "ffprobe";
         p.StartInfo.Arguments = $"-i \"{InputFile}\" -v quiet -select_streams v:0 -show_entries format=bit_rate -of default=noprint_wrappers=1";
         p.StartInfo.UseShellExecute = false;
         p.StartInfo.CreateNoWindow = true;
@@ -57,6 +57,6 @@ internal class Render
     {
         string arguments = GetArguments();
 
-        Process.Start("ffmpeg.exe", arguments);
+        Process.Start("ffmpeg", arguments);
     }
 }

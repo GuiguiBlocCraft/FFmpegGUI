@@ -43,6 +43,8 @@
             label4 = new Label();
             openFileDialog = new OpenFileDialog();
             label_Title = new Label();
+            label_Author = new Label();
+            label_createdBy = new Label();
             SuspendLayout();
             // 
             // lblFile
@@ -182,11 +184,38 @@
             label_Title.TabIndex = 13;
             label_Title.Text = "FFmpeg GUI";
             // 
+            // label_Author
+            // 
+            label_Author.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            label_Author.AutoSize = true;
+            label_Author.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label_Author.Location = new Point(704, 210);
+            label_Author.Name = "label_Author";
+            label_Author.Size = new Size(88, 13);
+            label_Author.TabIndex = 14;
+            label_Author.Text = "GuiguiBlocCraft";
+            label_Author.TextAlign = ContentAlignment.TopRight;
+            label_Author.Click += label_Author_Click;
+            // 
+            // label_createdBy
+            // 
+            label_createdBy.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            label_createdBy.AutoSize = true;
+            label_createdBy.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label_createdBy.Location = new Point(646, 210);
+            label_createdBy.Name = "label_createdBy";
+            label_createdBy.Size = new Size(62, 13);
+            label_createdBy.TabIndex = 15;
+            label_createdBy.Text = "Created by";
+            label_createdBy.TextAlign = ContentAlignment.TopRight;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 232);
+            Controls.Add(label_createdBy);
+            Controls.Add(label_Author);
             Controls.Add(label_Title);
             Controls.Add(label4);
             Controls.Add(checkBox_durationMode);
@@ -227,5 +256,7 @@
         private Label label4;
         private OpenFileDialog openFileDialog;
         private Label label_Title;
+        private Label label_Author;
+        private Label label_createdBy;
     }
 }

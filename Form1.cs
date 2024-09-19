@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
 namespace ffmpegGui_SimpleCut
 {
     public partial class Form1 : Form
@@ -98,6 +101,18 @@ namespace ffmpegGui_SimpleCut
                 label4.Visible = false;
                 tBox_duration.Visible = false;
             }
+        }
+
+        private void label_Author_Click(object sender, EventArgs e)
+        {
+            string url = "https://github.com/GuiguiBlocCraft/FFmpegGUI";
+
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            else if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                Process.Start("xdg-open", url);
+            else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                Process.Start("open", url);
         }
     }
 }
