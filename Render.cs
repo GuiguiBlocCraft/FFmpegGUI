@@ -9,11 +9,12 @@ internal class Render
     private string OutputFile { get; set; }
     private float StartPos { get; set; }
     private float Duration { get; set; }
-    private int BitRate { get; set; }
+    private int BitRateVideo { get; set; }
+    private int BitRateAudio { get; set; }
 
     private string GetArguments()
     {
-        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" -ss {StartPos} -t {Duration} -b:v {Math.Floor((float)BitRate / 1000000)}M -c:a copy {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{OutputFile}\"";
+        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" -ss {StartPos} -t {Duration} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{OutputFile}\"";
     }
 
     public void SetStartToFrom(float start, float from)
@@ -34,11 +35,11 @@ internal class Render
         OutputFile = outputFile;
     }
 
-    public int SetBitrate()
+    public void SetBitrate()
     {
         var p = new Process();
         p.StartInfo.FileName = "ffprobe";
-        p.StartInfo.Arguments = $"-i \"{InputFile}\" -v quiet -select_streams v:0 -show_entries format=bit_rate -of default=noprint_wrappers=1";
+        p.StartInfo.Arguments = $"-i \"{InputFile}\" -v 0 -show_entries stream=bit_rate -of default=noprint_wrappers=1";
         p.StartInfo.UseShellExecute = false;
         p.StartInfo.CreateNoWindow = true;
         p.StartInfo.RedirectStandardOutput = true;
@@ -46,11 +47,23 @@ internal class Render
         p.WaitForExit();
 
         string result = p.StandardOutput.ReadToEnd();
-        int bitrate = int.Parse(result.Replace("bit_rate=", string.Empty).Trim());
+        int index = 0;
 
-        BitRate = bitrate;
+        foreach(string line in result.Split(Environment.NewLine))
+        {
+            string[] data = line.Split('=');
 
-        return BitRate;
+            if(data[0] == "bit_rate")
+            {
+                int bitrate = Int32.Parse(data[1]);
+
+                if(index == 0)
+                    BitRateVideo = bitrate;
+                else
+                    BitRateAudio = bitrate;
+                index++;
+            }
+        }
     }
 
     public void Execute()

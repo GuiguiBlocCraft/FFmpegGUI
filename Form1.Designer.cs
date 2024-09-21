@@ -33,14 +33,14 @@
             btn_openFile = new Button();
             label1 = new Label();
             label2 = new Label();
-            tBox_start = new TextBox();
-            tBox_from = new TextBox();
             label3 = new Label();
-            tBox_duration = new TextBox();
+            label4 = new Label();
+            textBox_start = new TextBox();
+            textBox_from = new TextBox();
+            textBox_duration = new TextBox();
             btn_Start = new Button();
             checkBox_useGC = new CheckBox();
             checkBox_durationMode = new CheckBox();
-            label4 = new Label();
             openFileDialog = new OpenFileDialog();
             label_Title = new Label();
             label_Author = new Label();
@@ -93,22 +93,6 @@
             label2.TabIndex = 4;
             label2.Text = "to";
             // 
-            // tBox_start
-            // 
-            tBox_start.Location = new Point(74, 87);
-            tBox_start.Name = "tBox_start";
-            tBox_start.Size = new Size(96, 23);
-            tBox_start.TabIndex = 5;
-            tBox_start.Text = "0:00:00.00";
-            // 
-            // tBox_from
-            // 
-            tBox_from.Location = new Point(197, 87);
-            tBox_from.Name = "tBox_from";
-            tBox_from.Size = new Size(96, 23);
-            tBox_from.TabIndex = 6;
-            tBox_from.Text = "0:00:00.00";
-            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -119,15 +103,43 @@
             label3.Text = "with duration in";
             label3.Visible = false;
             // 
-            // tBox_duration
+            // label4
             // 
-            tBox_duration.Location = new Point(268, 87);
-            tBox_duration.Name = "tBox_duration";
-            tBox_duration.Size = new Size(96, 23);
-            tBox_duration.TabIndex = 8;
-            tBox_duration.Text = "0";
-            tBox_duration.TextAlign = HorizontalAlignment.Right;
-            tBox_duration.Visible = false;
+            label4.AutoSize = true;
+            label4.Location = new Point(367, 91);
+            label4.Name = "label4";
+            label4.Size = new Size(50, 15);
+            label4.TabIndex = 12;
+            label4.Text = "seconds";
+            label4.Visible = false;
+            // 
+            // textBox_start
+            // 
+            textBox_start.Location = new Point(74, 87);
+            textBox_start.Name = "textBox_start";
+            textBox_start.Size = new Size(96, 23);
+            textBox_start.TabIndex = 5;
+            textBox_start.Text = "0:00:00.00";
+            textBox_start.Validated += textBox_start_Validated;
+            // 
+            // textBox_from
+            // 
+            textBox_from.Location = new Point(197, 87);
+            textBox_from.Name = "textBox_from";
+            textBox_from.Size = new Size(96, 23);
+            textBox_from.TabIndex = 6;
+            textBox_from.Text = "0:00:00.00";
+            textBox_from.Validated += textBox_from_Validated;
+            // 
+            // textBox_duration
+            // 
+            textBox_duration.Location = new Point(268, 87);
+            textBox_duration.Name = "textBox_duration";
+            textBox_duration.Size = new Size(96, 23);
+            textBox_duration.TabIndex = 8;
+            textBox_duration.Text = "0";
+            textBox_duration.TextAlign = HorizontalAlignment.Right;
+            textBox_duration.Visible = false;
             // 
             // btn_Start
             // 
@@ -162,16 +174,6 @@
             checkBox_durationMode.Text = "Duration mode";
             checkBox_durationMode.UseVisualStyleBackColor = true;
             checkBox_durationMode.CheckedChanged += checkBox_durationMode_CheckedChanged;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(367, 91);
-            label4.Name = "label4";
-            label4.Size = new Size(50, 15);
-            label4.TabIndex = 12;
-            label4.Text = "seconds";
-            label4.Visible = false;
             // 
             // label_Title
             // 
@@ -211,6 +213,7 @@
             // 
             // Form1
             // 
+            AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 232);
@@ -221,10 +224,10 @@
             Controls.Add(checkBox_durationMode);
             Controls.Add(checkBox_useGC);
             Controls.Add(btn_Start);
-            Controls.Add(tBox_duration);
+            Controls.Add(textBox_duration);
             Controls.Add(label3);
-            Controls.Add(tBox_from);
-            Controls.Add(tBox_start);
+            Controls.Add(textBox_from);
+            Controls.Add(textBox_start);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(btn_openFile);
@@ -235,6 +238,8 @@
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "FFmpeg GUI";
+            DragDrop += Form1_DragDrop;
+            DragEnter += Form1_DragEnter;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -246,14 +251,14 @@
         private Button btn_openFile;
         private Label label1;
         private Label label2;
-        private TextBox tBox_start;
-        private TextBox tBox_from;
         private Label label3;
-        private TextBox tBox_duration;
+        private Label label4;
+        private TextBox textBox_start;
+        private TextBox textBox_from;
+        private TextBox textBox_duration;
         private Button btn_Start;
         private CheckBox checkBox_useGC;
         private CheckBox checkBox_durationMode;
-        private Label label4;
         private OpenFileDialog openFileDialog;
         private Label label_Title;
         private Label label_Author;

@@ -40,6 +40,12 @@ namespace ffmpegGui_SimpleCut
                 return;
             }
 
+            if(!File.Exists(textBox_file.Text))
+            {
+                MessageBox.Show("File doesn't exist, please select a correct file video", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if(checkBox_durationMode.Checked)
             {
                 float start;
@@ -47,8 +53,8 @@ namespace ffmpegGui_SimpleCut
 
                 try
                 {
-                    start = ParseTime.Parse(tBox_start.Text);
-                    duration = Int32.Parse(tBox_duration.Text);
+                    start = ParseTime.Parse(textBox_start.Text);
+                    duration = Int32.Parse(textBox_duration.Text);
                 }
                 catch(FormatException)
                 {
@@ -65,8 +71,8 @@ namespace ffmpegGui_SimpleCut
 
                 try
                 {
-                    start = ParseTime.Parse(tBox_start.Text);
-                    from = ParseTime.Parse(tBox_from.Text);
+                    start = ParseTime.Parse(textBox_start.Text);
+                    from = ParseTime.Parse(textBox_from.Text);
                 }
                 catch(FormatException)
                 {
@@ -88,31 +94,73 @@ namespace ffmpegGui_SimpleCut
             if(checkBox_durationMode.Checked)
             {
                 label2.Visible = false;
-                tBox_from.Visible = false;
+                textBox_from.Visible = false;
                 label3.Visible = true;
                 label4.Visible = true;
-                tBox_duration.Visible = true;
+                textBox_duration.Visible = true;
             }
             else
             {
                 label2.Visible = true;
-                tBox_from.Visible = true;
+                textBox_from.Visible = true;
                 label3.Visible = false;
                 label4.Visible = false;
-                tBox_duration.Visible = false;
+                textBox_duration.Visible = false;
             }
         }
 
         private void label_Author_Click(object sender, EventArgs e)
         {
-            string url = "https://github.com/GuiguiBlocCraft/FFmpegGUI";
+            Process.Start(new ProcessStartInfo("https://github.com/GuiguiBlocCraft") { UseShellExecute = true });
+        }
 
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-            else if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                Process.Start("xdg-open", url);
-            else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                Process.Start("open", url);
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            if(!e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                this.Invalidate();
+                return;
+            }
+
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            textBox_file.Text = files[0];
+        }
+
+        private void Form1_DragEnter(object sender, DragEventArgs e)
+        {
+            if(e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void textBox_start_Validated(object sender, EventArgs e)
+        {
+            try
+            {
+                textBox_start.Text = ParseTime.Stringify(ParseTime.Parse(textBox_start.Text));
+            }
+            catch(FormatException)
+            {
+                textBox_start.Text = "0:00:00.00";
+            }
+        }
+
+        private void textBox_from_Validated(object sender, EventArgs e)
+        {
+            try
+            {
+                textBox_from.Text = ParseTime.Stringify(ParseTime.Parse(textBox_from.Text));
+            }
+            catch(FormatException)
+            {
+                textBox_from.Text = "0:00:00.00";
+            }
         }
     }
 }
