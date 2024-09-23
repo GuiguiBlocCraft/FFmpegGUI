@@ -66,6 +66,32 @@ internal class Render
         }
     }
 
+    public static async Task<float> GetDuration(string fileName)
+    {
+        var p = new Process();
+        p.StartInfo.FileName = "ffprobe";
+        p.StartInfo.Arguments = $"-i \"{fileName}\" -v 0 -show_entries stream=duration -of default=noprint_wrappers=1";
+        p.StartInfo.UseShellExecute = false;
+        p.StartInfo.CreateNoWindow = true;
+        p.StartInfo.RedirectStandardOutput = true;
+        p.Start();
+        await p.WaitForExitAsync();
+
+        string result = p.StandardOutput.ReadToEnd();
+
+        foreach(string line in result.Split(Environment.NewLine))
+        {
+            string[] data = line.Split('=');
+
+            if(data[0] == "duration")
+            {
+                return float.Parse(data[1].Replace('.', ','));
+            }
+        }
+
+        return 0f;
+    }
+
     public void Execute()
     {
         string arguments = GetArguments();

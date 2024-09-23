@@ -33,9 +33,10 @@ namespace ffmpegGui_SimpleCut
             openFileDialog.ShowDialog();
         }
 
-        private void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
+        private async void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             textBox_file.Text = openFileDialog.FileName;
+            textBox_from.Text = ParseTime.Stringify(await Render.GetDuration(openFileDialog.FileName));
         }
 
         private void btn_Start_Click(object sender, EventArgs e)
@@ -122,7 +123,7 @@ namespace ffmpegGui_SimpleCut
             Process.Start(new ProcessStartInfo("https://github.com/GuiguiBlocCraft") { UseShellExecute = true });
         }
 
-        private void Form1_DragDrop(object sender, DragEventArgs e)
+        private async void Form1_DragDrop(object sender, DragEventArgs e)
         {
             if(!e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -133,6 +134,7 @@ namespace ffmpegGui_SimpleCut
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             textBox_file.Text = files[0];
+            textBox_from.Text = ParseTime.Stringify(await Render.GetDuration(files[0]));
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
