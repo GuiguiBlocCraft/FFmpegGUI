@@ -1,5 +1,5 @@
+using FFmpeg.NET.Events;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace ffmpegGui_SimpleCut
 {
@@ -83,6 +83,8 @@ namespace ffmpegGui_SimpleCut
                 render.SetStartToFrom(start, from);
             }
 
+            render.FFmpeg.Progress += OnProgress;
+
             render.SetFiles(textBox_file.Text, FileUtils.MakeFileOutput(textBox_file.Text));
             render.UseGraphicCard = checkBox_useGC.Checked;
             render.SetBitrate();
@@ -161,6 +163,11 @@ namespace ffmpegGui_SimpleCut
             {
                 textBox_from.Text = "0:00:00.00";
             }
+        }
+
+        private void OnProgress(object sender, ConversionProgressEventArgs e)
+        {
+            btn_Start.Text = $"{e.ProcessedDuration} with {e.Fps} fps";
         }
     }
 }

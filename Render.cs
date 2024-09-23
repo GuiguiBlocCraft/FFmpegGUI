@@ -1,12 +1,15 @@
 ﻿using System.Diagnostics;
+using FFmpeg.NET;
 
 namespace ffmpegGui_SimpleCut;
 
 internal class Render
 {
+    public Engine FFmpeg = new Engine("ffmpeg.exe");
+
     public bool UseGraphicCard { get; set; } = false;
-    private string InputFile { get; set; }
-    private string OutputFile { get; set; }
+    private InputFile FileIn { get; set; }
+    private OutputFile FileOut { get; set; }
     private float StartPos { get; set; }
     private float Duration { get; set; }
     private int BitRateVideo { get; set; }
@@ -14,7 +17,7 @@ internal class Render
 
     private string GetArguments()
     {
-        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" -ss {StartPos} -t {Duration} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{OutputFile}\"";
+        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{FileIn.Name}\" -ss {StartPos} -t {Duration} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{FileOut.Name}\"";
     }
 
     public void SetStartToFrom(float start, float from)
@@ -31,15 +34,15 @@ internal class Render
 
     public void SetFiles(string inputFile, string outputFile)
     {
-        InputFile = inputFile;
-        OutputFile = outputFile;
+        FileIn = new InputFile(inputFile);
+        FileOut = new OutputFile(outputFile);
     }
 
     public void SetBitrate()
     {
         var p = new Process();
         p.StartInfo.FileName = "ffprobe";
-        p.StartInfo.Arguments = $"-i \"{InputFile}\" -v 0 -show_entries stream=bit_rate -of default=noprint_wrappers=1";
+        p.StartInfo.Arguments = $"-i \"{FileIn}\" -v 0 -show_entries stream=bit_rate -of default=noprint_wrappers=1";
         p.StartInfo.UseShellExecute = false;
         p.StartInfo.CreateNoWindow = true;
         p.StartInfo.RedirectStandardOutput = true;
@@ -66,10 +69,13 @@ internal class Render
         }
     }
 
-    public void Execute()
+    public async Task Execute()
     {
-        string arguments = GetArguments();
+        ConversionOptions options = new ConversionOptions();
+        options.CutMedia(TimeSpan.FromSeconds(StartPos), TimeSpan.FromSeconds(Duration));
+        options.VideoBitRate = BitRateVideo;
+        options.AudioBitRate = BitRateAudio;
 
-        Process.Start("ffmpeg", arguments);
+        await FFmpeg.ConvertAsync(FileIn, FileOut, options, CancellationToken.None);
     }
 }
