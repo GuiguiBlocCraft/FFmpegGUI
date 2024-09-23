@@ -15,6 +15,14 @@ namespace ffmpegGui_SimpleCut
             }
 
             openFileDialog.FileOk += OpenFileDialog_FileOk;
+
+            // Check ffmpeg and ffprobe
+            if(!FileUtils.IsFileExistsInPath("ffmpeg.exe") && !FileUtils.IsFileExistsInPath("ffprobe.exe"))
+            {
+                btn_Start.Enabled = false;
+                MessageBox.Show("FFmpeg was not found in your PATH. Please install it before launch this app.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
         }
 
         private void btn_openFile_Click(object sender, EventArgs e)

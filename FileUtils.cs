@@ -10,4 +10,12 @@ internal class FileUtils
 
         return $"{filename}_splited{extension}";
     }
+
+    public static bool IsFileExistsInPath(string filename)
+    {
+        return Environment.GetEnvironmentVariable("PATH")
+            .Split(';')
+            .Where(s => File.Exists(Path.Combine(s, filename)))
+            .Any();
+    }
 }
