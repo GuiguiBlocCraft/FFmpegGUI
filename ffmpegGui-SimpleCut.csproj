@@ -3,10 +3,17 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <RootNamespace>ffmpegGui_SimpleCut</RootNamespace>
+    <RootNamespace>FFmpeg GUI</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.1.1</Version>
+    <Authors>GuiguiBlocCraft</Authors>
+    <ApplicationIcon>ffmpeg_gui.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="ffmpeg_gui.ico" />
+  </ItemGroup>
 
 </Project>
