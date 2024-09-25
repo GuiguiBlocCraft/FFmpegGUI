@@ -1,5 +1,6 @@
 using FFmpeg.NET.Events;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace ffmpegGui_SimpleCut
 {
@@ -15,6 +16,14 @@ namespace ffmpegGui_SimpleCut
             }
 
             openFileDialog.FileOk += OpenFileDialog_FileOk;
+
+            // Check ffmpeg and ffprobe
+            if(!FileUtils.IsFileExistsInPath("ffmpeg.exe") && !FileUtils.IsFileExistsInPath("ffprobe.exe"))
+            {
+                btn_Start.Enabled = false;
+                MessageBox.Show("FFmpeg was not found in your PATH. Please install it before launch this app.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
         }
 
         private void btn_openFile_Click(object sender, EventArgs e)
@@ -25,9 +34,10 @@ namespace ffmpegGui_SimpleCut
             openFileDialog.ShowDialog();
         }
 
-        private void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
+        private async void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             textBox_file.Text = openFileDialog.FileName;
+            textBox_from.Text = ParseTime.Stringify(await Render.GetDuration(openFileDialog.FileName));
         }
 
         private void btn_Start_Click(object sender, EventArgs e)
@@ -54,7 +64,7 @@ namespace ffmpegGui_SimpleCut
                 try
                 {
                     start = ParseTime.Parse(textBox_start.Text);
-                    duration = Int32.Parse(textBox_duration.Text);
+                    duration = Int32.Parse(textBox_duration.Text, CultureInfo.InvariantCulture);
                 }
                 catch(FormatException)
                 {
@@ -116,7 +126,7 @@ namespace ffmpegGui_SimpleCut
             Process.Start(new ProcessStartInfo("https://github.com/GuiguiBlocCraft") { UseShellExecute = true });
         }
 
-        private void Form1_DragDrop(object sender, DragEventArgs e)
+        private async void Form1_DragDrop(object sender, DragEventArgs e)
         {
             if(!e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -127,6 +137,7 @@ namespace ffmpegGui_SimpleCut
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             textBox_file.Text = files[0];
+            textBox_from.Text = ParseTime.Stringify(await Render.GetDuration(files[0]));
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
