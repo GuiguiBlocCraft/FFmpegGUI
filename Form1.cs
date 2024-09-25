@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace ffmpegGui_SimpleCut
@@ -63,7 +64,7 @@ namespace ffmpegGui_SimpleCut
                 try
                 {
                     start = ParseTime.Parse(textBox_start.Text);
-                    duration = Int32.Parse(textBox_duration.Text);
+                    duration = Int32.Parse(textBox_duration.Text, CultureInfo.InvariantCulture);
                 }
                 catch(FormatException)
                 {

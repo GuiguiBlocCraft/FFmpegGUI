@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 
 namespace ffmpegGui_SimpleCut;
 
@@ -14,7 +15,7 @@ internal class Render
 
     private string GetArguments()
     {
-        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" -ss {StartPos} -t {Duration} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{OutputFile}\"";
+        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" -ss {StartPos.ToString(CultureInfo.InvariantCulture)} -t {Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{OutputFile}\"";
     }
 
     public void SetStartToFrom(float start, float from)
@@ -55,7 +56,7 @@ internal class Render
 
             if(data[0] == "bit_rate")
             {
-                int bitrate = Int32.Parse(data[1]);
+                int bitrate = Int32.Parse(data[1], CultureInfo.InvariantCulture);
 
                 if(index == 0)
                     BitRateVideo = bitrate;
@@ -85,7 +86,7 @@ internal class Render
 
             if(data[0] == "duration")
             {
-                return float.Parse(data[1].Replace('.', ','));
+                return float.Parse(data[1], CultureInfo.InvariantCulture);
             }
         }
 
