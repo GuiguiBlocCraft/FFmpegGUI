@@ -59,12 +59,12 @@ namespace ffmpegGui_SimpleCut
             if(checkBox_durationMode.Checked)
             {
                 float start;
-                int duration;
+                float duration;
 
                 try
                 {
                     start = ParseTime.Parse(textBox_start.Text);
-                    duration = Int32.Parse(textBox_duration.Text, CultureInfo.InvariantCulture);
+                    duration = float.Parse(textBox_duration.Text, CultureInfo.InvariantCulture);
                 }
                 catch(FormatException)
                 {

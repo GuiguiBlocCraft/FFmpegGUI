@@ -24,7 +24,7 @@ internal class Render
         Duration = from - start;
     }
 
-    public void SetStartDuration(float start, int duration)
+    public void SetStartDuration(float start, float duration)
     {
         StartPos = start;
         Duration = duration;
