@@ -8,7 +8,20 @@ internal class FileUtils
         string extension = "." + list[list.Length - 1];
         string filename = inputFile.Substring(0, inputFile.Length - extension.Length);
 
-        return $"{filename}_splited{extension}";
+        string result = $"{filename}_splited{extension}";
+
+        if(File.Exists(result))
+        {
+            int n = 0;
+
+            do
+            {
+                n++;
+                result = $"{filename}_splited-{n}{extension}";
+            } while(File.Exists(result));
+        }
+
+        return result;
     }
 
     public static bool IsFileExistsInPath(string filename)
