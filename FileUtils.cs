@@ -2,26 +2,32 @@
 
 internal class FileUtils
 {
-    public static string MakeFileOutput(string inputFile)
+    public static string[] MakeFileOutput(string inputFile, int limit = 1)
     {
         string[] list = inputFile.Split('.');
         string extension = "." + list[list.Length - 1];
         string filename = inputFile.Substring(0, inputFile.Length - extension.Length);
 
+        List<string> listFileName = new List<string>();
         string result = $"{filename}_splited{extension}";
 
-        if(File.Exists(result))
+        for(int i = 0; i < limit; i++)
         {
-            int n = 0;
-
-            do
+            if(listFileName.Any(a => a == result) || File.Exists(result))
             {
-                n++;
-                result = $"{filename}_splited-{n}{extension}";
-            } while(File.Exists(result));
+                int n = 0;
+
+                do
+                {
+                    n++;
+                    result = $"{filename}_splited-{n}{extension}";
+                } while(listFileName.Any(a => a == result) || File.Exists(result));
+            }
+
+            listFileName.Add(result);
         }
 
-        return result;
+        return listFileName.ToArray();
     }
 
     public static bool IsFileExistsInPath(string filename)

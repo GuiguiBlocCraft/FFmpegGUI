@@ -7,33 +7,20 @@ internal class Render
 {
     public bool UseGraphicCard { get; set; } = false;
     private string InputFile { get; set; }
-    private string OutputFile { get; set; }
-    private float StartPos { get; set; }
-    private float Duration { get; set; }
+    private List<Split> Splits { get; set; } = new List<Split>();
     private int BitRateVideo { get; set; }
     private int BitRateAudio { get; set; }
 
     private string GetArguments()
     {
-        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" -ss {StartPos.ToString(CultureInfo.InvariantCulture)} -t {Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{OutputFile}\"";
+        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" "
+            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{s.OutputFile}\""));
     }
 
-    public void SetStartToFrom(float start, float from)
-    {
-        StartPos = start;
-        Duration = from - start;
-    }
-
-    public void SetStartDuration(float start, float duration)
-    {
-        StartPos = start;
-        Duration = duration;
-    }
-
-    public void SetFiles(string inputFile, string outputFile)
+    public void SetSplits(string inputFile, List<Split> splits)
     {
         InputFile = inputFile;
-        OutputFile = outputFile;
+        Splits = splits;
     }
 
     public void SetBitrate()
