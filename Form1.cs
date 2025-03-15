@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 
 namespace ffmpegGui_SimpleCut
 {
@@ -250,6 +251,11 @@ namespace ffmpegGui_SimpleCut
             textBox_from.Text = ParseTime.Stringify(split.StartPos);
             textBox_to.Text = ParseTime.Stringify(split.StartPos + split.Duration);
             textBox_duration.Text = split.Duration.ToString();
+        }
+
+        public void SetTitleVersion(Version version)
+        {
+            Text += $" ({version.Major}.{version.Minor}.{version.Build})";
         }
     }
 }
