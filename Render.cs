@@ -73,7 +73,9 @@ internal class Render
 
             if(data[0] == "duration")
             {
-                return float.Parse(data[1], CultureInfo.InvariantCulture);
+                if(float.TryParse(data[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float value))
+                    return value;
+                return 0f;
             }
         }
 
