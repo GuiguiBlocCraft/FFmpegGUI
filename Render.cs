@@ -9,41 +9,28 @@ internal class Render
     public Engine FFmpeg = new Engine("ffmpeg.exe");
 
     public bool UseGraphicCard { get; set; } = false;
-    private InputFile FileIn { get; set; }
-    private OutputFile FileOut { get; set; }
-    private float StartPos { get; set; }
-    private float Duration { get; set; }
+    private string InputFile { get; set; }
+    private List<Split> Splits { get; set; } = new List<Split>();
     private int BitRateVideo { get; set; }
     private int BitRateAudio { get; set; }
 
     private string GetArguments()
     {
-        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{FileIn.Name}\" -ss {StartPos.ToString(CultureInfo.InvariantCulture)} -t {Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{FileOut.Name}\"";
+        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" "
+            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{s.OutputFile}\""));
     }
 
-    public void SetStartToFrom(float start, float from)
+    public void SetSplits(string inputFile, List<Split> splits)
     {
-        StartPos = start;
-        Duration = from - start;
-    }
-
-    public void SetStartDuration(float start, int duration)
-    {
-        StartPos = start;
-        Duration = duration;
-    }
-
-    public void SetFiles(string inputFile, string outputFile)
-    {
-        FileIn = new InputFile(inputFile);
-        FileOut = new OutputFile(outputFile);
+        InputFile = inputFile;
+        Splits = splits;
     }
 
     public void SetBitrate()
     {
         var p = new Process();
         p.StartInfo.FileName = "ffprobe";
-        p.StartInfo.Arguments = $"-i \"{FileIn}\" -v 0 -show_entries stream=bit_rate -of default=noprint_wrappers=1";
+        p.StartInfo.Arguments = $"-i \"{InputFile}\" -v 0 -show_entries stream=bit_rate -of default=noprint_wrappers=1";
         p.StartInfo.UseShellExecute = false;
         p.StartInfo.CreateNoWindow = true;
         p.StartInfo.RedirectStandardOutput = true;
@@ -89,7 +76,9 @@ internal class Render
 
             if(data[0] == "duration")
             {
-                return float.Parse(data[1], CultureInfo.InvariantCulture);
+                if(float.TryParse(data[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float value))
+                    return value;
+                return 0f;
             }
         }
 
@@ -98,11 +87,6 @@ internal class Render
 
     public async Task Execute()
     {
-        ConversionOptions options = new ConversionOptions();
-        options.CutMedia(TimeSpan.FromSeconds(StartPos), TimeSpan.FromSeconds(Duration));
-        options.VideoBitRate = BitRateVideo;
-        options.AudioBitRate = BitRateAudio;
-
-        await FFmpeg.ConvertAsync(FileIn, FileOut, options, CancellationToken.None);
+        await FFmpeg.ExecuteAsync(GetArguments(), CancellationToken.None);
     }
 }

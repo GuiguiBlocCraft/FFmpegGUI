@@ -6,6 +6,8 @@ namespace ffmpegGui_SimpleCut
 {
     public partial class Form1 : Form
     {
+        private ListSplits ListSplits = new ListSplits();
+
         public Form1(string inputFile = null)
         {
             InitializeComponent();
@@ -18,12 +20,14 @@ namespace ffmpegGui_SimpleCut
             openFileDialog.FileOk += OpenFileDialog_FileOk;
 
             // Check ffmpeg and ffprobe
-            if(!FileUtils.IsFileExistsInPath("ffmpeg.exe") && !FileUtils.IsFileExistsInPath("ffprobe.exe"))
+            if(!FileUtils.IsFileExistsInPath("ffmpeg.exe") || !FileUtils.IsFileExistsInPath("ffprobe.exe"))
             {
-                btn_Start.Enabled = false;
                 MessageBox.Show("FFmpeg was not found in your PATH. Please install it before launch this app.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
+
+            ListSplits.Add(0, 0);
+            UpdateComponents();
         }
 
         private void btn_openFile_Click(object sender, EventArgs e)
@@ -36,8 +40,14 @@ namespace ffmpegGui_SimpleCut
 
         private async void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
         {
+            float timeFrom = ParseTime.Parse(textBox_from.Text);
+            float duration = await Render.GetDuration(openFileDialog.FileName);
+
             textBox_file.Text = openFileDialog.FileName;
-            textBox_from.Text = ParseTime.Stringify(await Render.GetDuration(openFileDialog.FileName));
+            textBox_to.Text = ParseTime.Stringify(duration);
+
+            ListSplits.Update(timeFrom, duration);
+            UpdateComponents();
         }
 
         private void btn_Start_Click(object sender, EventArgs e)
@@ -59,20 +69,18 @@ namespace ffmpegGui_SimpleCut
             if(checkBox_durationMode.Checked)
             {
                 float start;
-                int duration;
+                float duration;
 
                 try
                 {
-                    start = ParseTime.Parse(textBox_start.Text);
-                    duration = Int32.Parse(textBox_duration.Text, CultureInfo.InvariantCulture);
+                    start = ParseTime.Parse(textBox_from.Text);
+                    duration = float.Parse(textBox_duration.Text, CultureInfo.InvariantCulture);
                 }
                 catch(FormatException)
                 {
                     MessageBox.Show("Syntax error on \"start\" or \"duration\" time", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-
-                render.SetStartDuration(start, duration);
             }
             else
             {
@@ -81,21 +89,20 @@ namespace ffmpegGui_SimpleCut
 
                 try
                 {
-                    start = ParseTime.Parse(textBox_start.Text);
-                    from = ParseTime.Parse(textBox_from.Text);
+                    start = ParseTime.Parse(textBox_from.Text);
+                    from = ParseTime.Parse(textBox_to.Text);
                 }
                 catch(FormatException)
                 {
                     MessageBox.Show("Syntax error on \"start\" or \"from\" time", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-
-                render.SetStartToFrom(start, from);
             }
 
             render.FFmpeg.Progress += OnProgress;
 
-            render.SetFiles(textBox_file.Text, FileUtils.MakeFileOutput(textBox_file.Text));
+            ListSplits.InitializeNames(textBox_file.Text);
+            render.SetSplits(textBox_file.Text, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
             render.SetBitrate();
             render.Execute();
@@ -106,7 +113,7 @@ namespace ffmpegGui_SimpleCut
             if(checkBox_durationMode.Checked)
             {
                 label2.Visible = false;
-                textBox_from.Visible = false;
+                textBox_to.Visible = false;
                 label3.Visible = true;
                 label4.Visible = true;
                 textBox_duration.Visible = true;
@@ -114,7 +121,7 @@ namespace ffmpegGui_SimpleCut
             else
             {
                 label2.Visible = true;
-                textBox_from.Visible = true;
+                textBox_to.Visible = true;
                 label3.Visible = false;
                 label4.Visible = false;
                 textBox_duration.Visible = false;
@@ -136,13 +143,18 @@ namespace ffmpegGui_SimpleCut
 
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
+            float timeFrom = ParseTime.Parse(textBox_from.Text);
+            float duration = await Render.GetDuration(files[0]);
+
             textBox_file.Text = files[0];
-            textBox_from.Text = ParseTime.Stringify(await Render.GetDuration(files[0]));
+
+            ListSplits.Update(timeFrom, duration);
+            UpdateComponents();
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
-            if(e.Data.GetDataPresent(DataFormats.FileDrop))
+            if(e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 e.Effect = DragDropEffects.Move;
             }
@@ -152,33 +164,100 @@ namespace ffmpegGui_SimpleCut
             }
         }
 
-        private void textBox_start_Validated(object sender, EventArgs e)
-        {
-            try
-            {
-                textBox_start.Text = ParseTime.Stringify(ParseTime.Parse(textBox_start.Text));
-            }
-            catch(FormatException)
-            {
-                textBox_start.Text = "0:00:00.00";
-            }
-        }
-
         private void textBox_from_Validated(object sender, EventArgs e)
         {
             try
             {
-                textBox_from.Text = ParseTime.Stringify(ParseTime.Parse(textBox_from.Text));
+                float timeTo = ParseTime.Parse(textBox_to.Text);
+                float timeFrom = ParseTime.Parse(textBox_from.Text);
+
+                ListSplits.Update(timeFrom, timeTo - timeFrom);
+                UpdateComponents();
             }
             catch(FormatException)
             {
-                textBox_from.Text = "0:00:00.00";
+                UpdateComponents();
             }
         }
 
         private void OnProgress(object sender, ConversionProgressEventArgs e)
         {
             btn_Start.Text = $"{e.ProcessedDuration} with {e.Fps} fps";
+        }
+
+        private void textBox_to_Validated(object sender, EventArgs e)
+        {
+            try
+            {
+                float timeTo = ParseTime.Parse(textBox_to.Text);
+                float timeFrom = ParseTime.Parse(textBox_from.Text);
+
+                ListSplits.Update(timeFrom, timeTo - timeFrom);
+                UpdateComponents();
+            }
+            catch(FormatException)
+            {
+                UpdateComponents();
+            }
+        }
+
+        private void textBox_duration_Validated(object sender, EventArgs e)
+        {
+            try
+            {
+                float timeFrom = ParseTime.Parse(textBox_from.Text);
+                float timeTo = float.Parse(textBox_duration.Text);
+                float duration = float.Parse(textBox_duration.Text);
+
+                ListSplits.Update(timeFrom, duration);
+                UpdateComponents();
+            }
+            catch(FormatException)
+            {
+                UpdateComponents();
+            }
+        }
+
+        private void btnPagePrev_Click(object sender, EventArgs e)
+        {
+            ListSplits.PreviousPage();
+            UpdateComponents();
+        }
+
+        private void btnPageNext_Click(object sender, EventArgs e)
+        {
+            ListSplits.NextPage();
+            UpdateComponents();
+        }
+
+        private void btnAddList_Click(object sender, EventArgs e)
+        {
+            ListSplits.Add(0, 0);
+            UpdateComponents();
+        }
+
+        private void btnRemoveList_Click(object sender, EventArgs e)
+        {
+            ListSplits.Remove();
+            UpdateComponents();
+        }
+
+        private void UpdateComponents()
+        {
+            lblPagination.Text = $"Split {ListSplits.Page} / {ListSplits.MaxPage}";
+            btnPagePrev.Enabled = ListSplits.Page > 1;
+            btnPageNext.Enabled = ListSplits.Page < ListSplits.MaxPage;
+            btnRemoveList.Enabled = ListSplits.MaxPage > 1;
+
+            Split split = ListSplits.GetData();
+            textBox_from.Text = ParseTime.Stringify(split.StartPos);
+            textBox_to.Text = ParseTime.Stringify(split.StartPos + split.Duration);
+            textBox_duration.Text = split.Duration.ToString();
+        }
+
+        public void SetTitleVersion(Version version)
+        {
+            Text += $" ({version.Major}.{version.Minor}.{version.Build})";
         }
     }
 }
