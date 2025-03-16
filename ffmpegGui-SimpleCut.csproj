@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="xFFmpeg.NET" Version="7.2.0" />
     <Content Include="ffmpeg_gui.ico" />
   </ItemGroup>
 

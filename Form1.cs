@@ -6,6 +6,8 @@ namespace ffmpegGui_SimpleCut
     public partial class Form1 : Form
     {
         private ListSplits ListSplits = new ListSplits();
+        private System.Timers.Timer Timer;
+        private Render render;
 
         public Form1(string inputFile = null)
         {
@@ -24,6 +26,10 @@ namespace ffmpegGui_SimpleCut
                 MessageBox.Show("FFmpeg was not found in your PATH. Please install it before launch this app.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
+
+            Timer = new System.Timers.Timer();
+            Timer.Interval = 50;
+            Timer.Elapsed += UpdateButtonStart;
 
             ListSplits.Add(0, 0);
             UpdateComponents();
@@ -49,9 +55,9 @@ namespace ffmpegGui_SimpleCut
             UpdateComponents();
         }
 
-        private void btn_Start_Click(object sender, EventArgs e)
+        private async void btn_Start_Click(object sender, EventArgs e)
         {
-            Render render = new Render();
+            render = new Render();
 
             if(String.IsNullOrEmpty(textBox_file.Text))
             {
@@ -102,7 +108,16 @@ namespace ffmpegGui_SimpleCut
             render.SetSplits(textBox_file.Text, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
             render.SetBitrate();
-            render.Execute();
+
+            Timer.Enabled = true;
+            btn_Start.Enabled = false;
+            lblInfo.Text = "Rendering...";
+
+            await render.Execute();
+
+            Timer.Enabled = false;
+            btn_Start.Enabled = true;
+            lblInfo.Text = "Render done!";
         }
 
         private void checkBox_durationMode_CheckedChanged(object sender, EventArgs e)
@@ -245,6 +260,23 @@ namespace ffmpegGui_SimpleCut
             textBox_from.Text = ParseTime.Stringify(split.StartPos);
             textBox_to.Text = ParseTime.Stringify(split.StartPos + split.Duration);
             textBox_duration.Text = split.Duration.ToString();
+        }
+
+        private void UpdateButtonStart(object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (render?.Progress != null)
+            {
+                try
+                {
+                    var time = render.Progress.ProcessedDuration;
+                    string strTime = time.Hours + "h"
+                        + (time.Minutes < 10 ? "0" : "") + time.Minutes + ":"
+                        + (time.Seconds < 10 ? "0" : "") + time.Seconds;
+
+                    lblInfo.Text = $"{render.Progress.Fps} fps - {strTime}";
+                }
+                catch(Exception) { }
+            }
         }
 
         public void SetTitleVersion(Version version)
