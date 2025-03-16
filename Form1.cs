@@ -27,7 +27,7 @@ namespace ffmpegGui_SimpleCut
             }
 
             ListSplits.Add(0, 0);
-            SetComponentsPagination();
+            UpdateComponents();
         }
 
         private void btn_openFile_Click(object sender, EventArgs e)
@@ -45,7 +45,9 @@ namespace ffmpegGui_SimpleCut
 
             textBox_file.Text = openFileDialog.FileName;
             textBox_to.Text = ParseTime.Stringify(duration);
+
             ListSplits.Update(timeFrom, duration);
+            UpdateComponents();
         }
 
         private void btn_Start_Click(object sender, EventArgs e)
@@ -143,8 +145,9 @@ namespace ffmpegGui_SimpleCut
             float duration = await Render.GetDuration(files[0]);
 
             textBox_file.Text = files[0];
-            textBox_to.Text = ParseTime.Stringify(duration);
+
             ListSplits.Update(timeFrom, duration);
+            UpdateComponents();
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
@@ -165,19 +168,13 @@ namespace ffmpegGui_SimpleCut
             {
                 float timeTo = ParseTime.Parse(textBox_to.Text);
                 float timeFrom = ParseTime.Parse(textBox_from.Text);
-                float duration = timeTo - timeFrom;
 
-                textBox_from.Text = ParseTime.Stringify(timeFrom);
-                if(checkBox_durationMode.Checked)
-                    textBox_to.Text = ParseTime.Stringify(timeTo);
-                else
-                    textBox_duration.Text = (timeTo - timeFrom).ToString();
-
-                ListSplits.Update(timeFrom, duration);
+                ListSplits.Update(timeFrom, timeTo - timeFrom);
+                UpdateComponents();
             }
             catch(FormatException)
             {
-                textBox_from.Text = "0:00:00.00";
+                UpdateComponents();
             }
         }
 
@@ -187,15 +184,13 @@ namespace ffmpegGui_SimpleCut
             {
                 float timeTo = ParseTime.Parse(textBox_to.Text);
                 float timeFrom = ParseTime.Parse(textBox_from.Text);
-                float duration = timeTo - timeFrom;
 
-                textBox_to.Text = ParseTime.Stringify(timeTo);
-                textBox_duration.Text = (timeTo - timeFrom).ToString();
-                ListSplits.Update(timeFrom, duration);
+                ListSplits.Update(timeFrom, timeTo - timeFrom);
+                UpdateComponents();
             }
             catch(FormatException)
             {
-                textBox_to.Text = "0:00:00.00";
+                UpdateComponents();
             }
         }
 
@@ -207,42 +202,42 @@ namespace ffmpegGui_SimpleCut
                 float timeTo = float.Parse(textBox_duration.Text);
                 float duration = float.Parse(textBox_duration.Text);
 
-                textBox_to.Text = ParseTime.Stringify(timeFrom + timeTo);
                 ListSplits.Update(timeFrom, duration);
+                UpdateComponents();
             }
             catch(FormatException)
             {
-                textBox_duration.Text = "0";
+                UpdateComponents();
             }
         }
 
         private void btnPagePrev_Click(object sender, EventArgs e)
         {
             ListSplits.PreviousPage();
-            SetComponentsPagination();
+            UpdateComponents();
         }
 
         private void btnPageNext_Click(object sender, EventArgs e)
         {
             ListSplits.NextPage();
-            SetComponentsPagination();
+            UpdateComponents();
         }
 
         private void btnAddList_Click(object sender, EventArgs e)
         {
             ListSplits.Add(0, 0);
-            SetComponentsPagination();
+            UpdateComponents();
         }
 
         private void btnRemoveList_Click(object sender, EventArgs e)
         {
             ListSplits.Remove();
-            SetComponentsPagination();
+            UpdateComponents();
         }
 
-        private void SetComponentsPagination()
+        private void UpdateComponents()
         {
-            lblPagination.Text = $"Page {ListSplits.Page} / {ListSplits.MaxPage}";
+            lblPagination.Text = $"Split {ListSplits.Page} / {ListSplits.MaxPage}";
             btnPagePrev.Enabled = ListSplits.Page > 1;
             btnPageNext.Enabled = ListSplits.Page < ListSplits.MaxPage;
             btnRemoveList.Enabled = ListSplits.MaxPage > 1;

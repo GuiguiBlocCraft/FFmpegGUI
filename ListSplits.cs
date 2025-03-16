@@ -34,7 +34,7 @@ public class ListSplits
     {
         Split split = Splits[Page - 1];
         split.StartPos = start;
-        split.Duration = duration;
+        split.Duration = duration < 0 ? 0 : duration;
     }
 
     public void Remove()
