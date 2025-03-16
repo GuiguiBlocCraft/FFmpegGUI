@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace ffmpegGui_SimpleCut
 {
@@ -8,6 +9,7 @@ namespace ffmpegGui_SimpleCut
         private ListSplits ListSplits = new ListSplits();
         private System.Timers.Timer Timer;
         private Render render;
+        private int TotalDuration = 0;
 
         public Form1(string inputFile = null)
         {
@@ -108,15 +110,18 @@ namespace ffmpegGui_SimpleCut
             render.SetSplits(textBox_file.Text, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
             render.SetBitrate();
+            TotalDuration = (int)render.GetTotalDuration();
 
             Timer.Enabled = true;
             btn_Start.Enabled = false;
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate);
             lblInfo.Text = "Rendering...";
 
             await render.Execute();
 
             Timer.Enabled = false;
             btn_Start.Enabled = true;
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
             lblInfo.Text = "Render done!";
         }
 
@@ -273,7 +278,10 @@ namespace ffmpegGui_SimpleCut
                         + (time.Minutes < 10 ? "0" : "") + time.Minutes + ":"
                         + (time.Seconds < 10 ? "0" : "") + time.Seconds;
 
-                    lblInfo.Text = $"{render.Progress.Fps} fps - {strTime}";
+                    lblInfo.Text = $"{render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)";
+
+                    TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
+                    TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, TotalDuration);
                 }
                 catch(Exception) { }
             }

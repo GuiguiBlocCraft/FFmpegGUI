@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
@@ -11,10 +10,9 @@
     <Authors>GuiguiBlocCraft</Authors>
     <ApplicationIcon>ffmpeg_gui.ico</ApplicationIcon>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="xFFmpeg.NET" Version="7.2.0" />
-    <Content Include="ffmpeg_gui.ico" />
+    <PackageReference Include="xFFmpeg.NET" Version="7.2.0"/>
+    <PackageReference Include="WindowsAPICodePack" Version="8.0.6"/>
+    <Content Include="ffmpeg_gui.ico"/>
   </ItemGroup>
-
 </Project>

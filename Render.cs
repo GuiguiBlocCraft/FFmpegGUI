@@ -68,6 +68,18 @@ internal class Render
         }
     }
 
+    public float GetTotalDuration()
+    {
+        float duration = 0;
+
+        foreach(Split split in Splits)
+        {
+            duration += split.Duration;
+        }
+
+        return duration;
+    }
+
     public static async Task<float> GetDuration(string fileName)
     {
         var p = new Process();
