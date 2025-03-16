@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Globalization;
-using System.Reflection;
 
 namespace ffmpegGui_SimpleCut
 {
@@ -20,7 +19,7 @@ namespace ffmpegGui_SimpleCut
             openFileDialog.FileOk += OpenFileDialog_FileOk;
 
             // Check ffmpeg and ffprobe
-            if(!FileUtils.IsFileExistsInPath("ffmpeg.exe") && !FileUtils.IsFileExistsInPath("ffprobe.exe"))
+            if(!FileUtils.IsFileExistsInPath("ffmpeg.exe") || !FileUtils.IsFileExistsInPath("ffprobe.exe"))
             {
                 MessageBox.Show("FFmpeg was not found in your PATH. Please install it before launch this app.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
