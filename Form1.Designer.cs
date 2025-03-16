@@ -151,7 +151,7 @@
             // btn_Start
             // 
             btn_Start.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btn_Start.Location = new Point(274, 187);
+            btn_Start.Location = new Point(326, 187);
             btn_Start.Name = "btn_Start";
             btn_Start.Size = new Size(148, 33);
             btn_Start.TabIndex = 17;
