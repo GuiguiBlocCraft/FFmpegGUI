@@ -1,18 +1,29 @@
 ﻿using System.Diagnostics;
-using FFmpeg.NET;
 using System.Globalization;
+using FFmpeg.NET;
+using FFmpeg.NET.Events;
 
 namespace ffmpegGui_SimpleCut;
 
 internal class Render
 {
-    public Engine FFmpeg = new Engine("ffmpeg.exe");
-
+    private Engine FFmpeg = new Engine("ffmpeg.exe");
     public bool UseGraphicCard { get; set; } = false;
     private string InputFile { get; set; }
     private List<Split> Splits { get; set; } = new List<Split>();
     private int BitRateVideo { get; set; }
     private int BitRateAudio { get; set; }
+    public ConversionProgressEventArgs Progress { get; set; }
+
+    public Render()
+    {
+        FFmpeg.Progress += OnProgress;
+    }
+
+    private void OnProgress(object sender, ConversionProgressEventArgs e)
+    {
+        Progress = e;
+    }
 
     private string GetArguments()
     {

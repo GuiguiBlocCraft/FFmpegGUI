@@ -51,6 +51,7 @@
             btnPageNext = new Button();
             btnAddList = new Button();
             btnRemoveList = new Button();
+            lblInfo = new Label();
             SuspendLayout();
             // 
             // lblFile
@@ -223,7 +224,7 @@
             lblPagination.AutoSize = true;
             lblPagination.Location = new Point(8, 122);
             lblPagination.Name = "lblPagination";
-            lblPagination.Size = new Size(59, 15);
+            lblPagination.Size = new Size(56, 15);
             lblPagination.TabIndex = 9;
             lblPagination.Text = "Split 0 / 0";
             // 
@@ -267,12 +268,24 @@
             btnRemoveList.UseVisualStyleBackColor = true;
             btnRemoveList.Click += btnRemoveList_Click;
             // 
+            // lblInfo
+            // 
+            lblInfo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblInfo.AutoSize = true;
+            lblInfo.Location = new Point(275, 168);
+            lblInfo.MinimumSize = new Size(250, 0);
+            lblInfo.Name = "lblInfo";
+            lblInfo.Size = new Size(250, 15);
+            lblInfo.TabIndex = 18;
+            lblInfo.TextAlign = ContentAlignment.TopCenter;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 232);
+            Controls.Add(lblInfo);
             Controls.Add(btnRemoveList);
             Controls.Add(btnAddList);
             Controls.Add(btnPageNext);
@@ -330,5 +343,6 @@
         private Button btnPageNext;
         private Button btnAddList;
         private Button btnRemoveList;
+        private Label lblInfo;
     }
 }
