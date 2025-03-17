@@ -7,18 +7,18 @@ namespace ffmpegGui_SimpleCut;
 
 internal class Render
 {
-    private Engine FFmpeg = new Engine("ffmpeg.exe");
-    public bool UseGraphicCard { get; set; } = false;
+    public static string FFmpeg = "ffmpeg.exe";
+    public static string FFprobe = "ffprobe.exe";
+
+    private Engine Engine = new Engine();
     private string InputFile { get; set; }
     private List<Split> Splits { get; set; } = new List<Split>();
-    private int BitRateVideo { get; set; }
-    private int BitRateAudio { get; set; }
     public ConversionProgressEventArgs Progress { get; set; }
+    private CancellationTokenSource cts = new CancellationTokenSource();
 
-    public Render()
-    {
-        FFmpeg.Progress += OnProgress;
-    }
+    public bool UseGraphicCard { get; set; } = false;
+    public StateRender StateRender { get; set; } = StateRender.Idle;
+    public string LastErrorMessage { get; set; }
 
     private void OnProgress(object sender, ConversionProgressEventArgs e)
     {
@@ -27,45 +27,19 @@ internal class Render
 
     private string GetArguments()
     {
-        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -y -i \"{InputFile}\" "
-            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{s.OutputFile}\""));
+        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -i \"{InputFile}\" "
+            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{s.OutputFile}\""));
     }
 
-    public void SetSplits(string inputFile, List<Split> splits)
+    public void SetData(string inputFile, List<Split> splits)
     {
         InputFile = inputFile;
         Splits = splits;
     }
 
-    public void SetBitrate()
+    public List<Split> GetSplits()
     {
-        var p = new Process();
-        p.StartInfo.FileName = "ffprobe";
-        p.StartInfo.Arguments = $"-i \"{InputFile}\" -v 0 -show_entries stream=bit_rate -of default=noprint_wrappers=1";
-        p.StartInfo.UseShellExecute = false;
-        p.StartInfo.CreateNoWindow = true;
-        p.StartInfo.RedirectStandardOutput = true;
-        p.Start();
-        p.WaitForExit();
-
-        string result = p.StandardOutput.ReadToEnd();
-        int index = 0;
-
-        foreach(string line in result.Split(Environment.NewLine))
-        {
-            string[] data = line.Split('=');
-
-            if(data[0] == "bit_rate")
-            {
-                int bitrate = Int32.Parse(data[1], CultureInfo.InvariantCulture);
-
-                if(index == 0)
-                    BitRateVideo = bitrate;
-                else
-                    BitRateAudio = bitrate;
-                index++;
-            }
-        }
+        return Splits;
     }
 
     public float GetTotalDuration()
@@ -110,6 +84,31 @@ internal class Render
 
     public async Task Execute()
     {
-        await FFmpeg.ExecuteAsync(GetArguments(), CancellationToken.None);
+        StateRender = StateRender.Running;
+        Engine.Progress += OnProgress;
+
+        try
+        {
+            await Engine.ExecuteAsync(GetArguments(), cts.Token);
+        }
+        catch(TaskCanceledException ex)
+        {
+            StateRender = StateRender.Cancelled;
+            LastErrorMessage = ex.Message;
+        }
+        catch(Exception ex)
+        {
+            StateRender = StateRender.Error;
+            LastErrorMessage = ex.Message;
+        }
+
+        if(StateRender == StateRender.Running)
+            StateRender = StateRender.Idle;
+        Engine.Progress -= OnProgress;
+    }
+
+    public void Stop()
+    {
+        cts.Cancel();
     }
 }

@@ -37,4 +37,23 @@ internal class FileUtils
             .Where(s => File.Exists(Path.Combine(s, filename)))
             .Any();
     }
+
+    public static async Task DeleteFile(string file)
+    {
+        bool deleted = false;
+
+        while(deleted == false)
+        {
+            try
+            {
+                if(File.Exists(file))
+                    File.Delete(file);
+
+                deleted = true;
+            }
+            catch(IOException) {
+                await Task.Delay(100);
+            }
+        }
+    }
 }

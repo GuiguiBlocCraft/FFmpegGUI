@@ -23,15 +23,11 @@ namespace ffmpegGui_SimpleCut
             openFileDialog.FileOk += OpenFileDialog_FileOk;
 
             // Check ffmpeg and ffprobe
-            if(!FileUtils.IsFileExistsInPath("ffmpeg.exe") || !FileUtils.IsFileExistsInPath("ffprobe.exe"))
+            if(!FileUtils.IsFileExistsInPath(Render.FFmpeg) || !FileUtils.IsFileExistsInPath(Render.FFprobe))
             {
                 MessageBox.Show("FFmpeg was not found in your PATH. Please install it before launch this app.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
-
-            Timer = new System.Timers.Timer();
-            Timer.Interval = 50;
-            Timer.Elapsed += UpdateButtonStart;
 
             ListSplits.Add(0, 0);
             UpdateComponents();
@@ -59,6 +55,13 @@ namespace ffmpegGui_SimpleCut
 
         private async void btn_Start_Click(object sender, EventArgs e)
         {
+            // To cancel render
+            if(render != null && render.StateRender == StateRender.Running)
+            {
+                render.Stop();
+                return;
+            }
+
             render = new Render();
 
             if(String.IsNullOrEmpty(textBox_file.Text))
@@ -107,22 +110,48 @@ namespace ffmpegGui_SimpleCut
             }
 
             ListSplits.InitializeNames(textBox_file.Text);
-            render.SetSplits(textBox_file.Text, ListSplits.ToList());
+            render.SetData(textBox_file.Text, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
-            render.SetBitrate();
             TotalDuration = (int)render.GetTotalDuration();
 
+            string oldText = btn_Start.Text;
+
+            Timer = new System.Timers.Timer();
+            Timer.Interval = 50;
+            Timer.Elapsed += UpdateButtonStart;
             Timer.Enabled = true;
-            btn_Start.Enabled = false;
+
+            btn_Start.Text = "Cancel render";
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate);
             lblInfo.Text = "Rendering...";
 
             await render.Execute();
 
             Timer.Enabled = false;
-            btn_Start.Enabled = true;
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
-            lblInfo.Text = "Render done!";
+            btn_Start.Text = oldText;
+
+            if(render.StateRender == StateRender.Cancelled)
+            {
+                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
+                lblInfo.Text = "Render cancelled!";
+
+                foreach(Split split in render.GetSplits())
+                {
+                    await FileUtils.DeleteFile(split.OutputFile);
+                }
+            }
+            else if(render.StateRender == StateRender.Error)
+            {
+                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Error);
+                lblInfo.Text = "Error on render!";
+
+                MessageBox.Show($"FFmpeg was killed!({render.LastErrorMessage})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
+                lblInfo.Text = "Render done!";
+            }
         }
 
         private void checkBox_durationMode_CheckedChanged(object sender, EventArgs e)
