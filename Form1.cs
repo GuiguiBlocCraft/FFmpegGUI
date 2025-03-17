@@ -110,9 +110,10 @@ namespace ffmpegGui_SimpleCut
             }
 
             ListSplits.InitializeNames(textBox_file.Text);
-            await render.SetData(textBox_file.Text, ListSplits.ToList());
+            render.SetData(textBox_file.Text, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
             TotalDuration = (int)render.GetTotalDuration();
+            await render.DetectAndSetValue();
 
             string oldText = btn_Start.Text;
 

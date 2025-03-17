@@ -18,6 +18,7 @@ internal class Render
     private CancellationTokenSource cts = new CancellationTokenSource();
 
     public bool UseGraphicCard { get; set; } = false;
+    public Graphic GraphicMethod { get; set; } = Graphic.Unknown;
     public StateRender StateRender { get; set; } = StateRender.Idle;
     public string LastErrorMessage { get; set; }
 
@@ -28,16 +29,37 @@ internal class Render
 
     private string GetArguments()
     {
+        string encoder = "";
+
+        if(GraphicMethod == Graphic.NVidia)
+            encoder = "nvenc";
+        else if(GraphicMethod == Graphic.AMD)
+            encoder = "amf";
+        else if(GraphicMethod == Graphic.Intel)
+            encoder = "qsv";
+
         return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -i \"{InputFile}\" "
-            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{s.OutputFile}\""));
+            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_" + encoder + " " : "")}\"{s.OutputFile}\""));
     }
 
-    public async Task SetData(string inputFile, List<Split> splits)
+    public void SetData(string inputFile, List<Split> splits)
     {
         InputFile = inputFile;
         Splits = splits;
-        BitRateVideo = await MediaInfo.GetBitRateVideo(inputFile);
-        BitRateAudio = await MediaInfo.GetBitRateAudio(inputFile);
+    }
+
+    public async Task DetectAndSetValue()
+    {
+        BitRateVideo = await MediaInfo.GetBitRateVideo(InputFile);
+        BitRateAudio = await MediaInfo.GetBitRateAudio(InputFile);
+
+        string videoName = GraphicUtil.Detect();
+        if(videoName.Contains("NVIDIA"))
+            GraphicMethod = Graphic.NVidia;
+        else if(videoName.Contains("AMD"))
+            GraphicMethod = Graphic.AMD;
+        else if(videoName.Contains("Intel"))
+            GraphicMethod = Graphic.Intel;
     }
 
     public List<Split> GetSplits()

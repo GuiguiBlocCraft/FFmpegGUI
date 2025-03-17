@@ -44,7 +44,7 @@ public class MediaInfo
         {
             StartInfo = {
                 FileName = Render.FFprobe,
-                Arguments = arguments,
+                Arguments = "-hide_banner " + arguments,
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true

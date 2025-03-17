@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>FFmpeg GUI</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="xFFmpeg.NET" Version="7.2.0"/>
     <PackageReference Include="WindowsAPICodePack" Version="8.0.6"/>
+    <PackageReference Include="System.Management" Version="9.0.3"/>
     <Content Include="ffmpeg_gui.ico"/>
   </ItemGroup>
 </Project>
