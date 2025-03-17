@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using FFmpeg.NET;
 using FFmpeg.NET.Events;
 
@@ -12,6 +11,8 @@ internal class Render
 
     private Engine Engine = new Engine();
     private string InputFile { get; set; }
+    private int BitRateVideo { get; set; }
+    private int BitRateAudio { get; set; }
     private List<Split> Splits { get; set; } = new List<Split>();
     public ConversionProgressEventArgs Progress { get; set; }
     private CancellationTokenSource cts = new CancellationTokenSource();
@@ -28,13 +29,15 @@ internal class Render
     private string GetArguments()
     {
         return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -i \"{InputFile}\" "
-            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{s.OutputFile}\""));
+            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_nvenc " : "")}\"{s.OutputFile}\""));
     }
 
-    public void SetData(string inputFile, List<Split> splits)
+    public async Task SetData(string inputFile, List<Split> splits)
     {
         InputFile = inputFile;
         Splits = splits;
+        BitRateVideo = await MediaInfo.GetBitRateVideo(inputFile);
+        BitRateAudio = await MediaInfo.GetBitRateAudio(inputFile);
     }
 
     public List<Split> GetSplits()
@@ -52,34 +55,6 @@ internal class Render
         }
 
         return duration;
-    }
-
-    public static async Task<float> GetDuration(string fileName)
-    {
-        var p = new Process();
-        p.StartInfo.FileName = "ffprobe";
-        p.StartInfo.Arguments = $"-i \"{fileName}\" -v 0 -show_entries stream=duration -of default=noprint_wrappers=1";
-        p.StartInfo.UseShellExecute = false;
-        p.StartInfo.CreateNoWindow = true;
-        p.StartInfo.RedirectStandardOutput = true;
-        p.Start();
-        await p.WaitForExitAsync();
-
-        string result = p.StandardOutput.ReadToEnd();
-
-        foreach(string line in result.Split(Environment.NewLine))
-        {
-            string[] data = line.Split('=');
-
-            if(data[0] == "duration")
-            {
-                if(float.TryParse(data[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float value))
-                    return value;
-                return 0f;
-            }
-        }
-
-        return 0f;
     }
 
     public async Task Execute()

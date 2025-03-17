@@ -44,7 +44,7 @@ namespace ffmpegGui_SimpleCut
         private async void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             float timeFrom = ParseTime.Parse(textBox_from.Text);
-            float duration = await Render.GetDuration(openFileDialog.FileName);
+            float duration = await MediaInfo.GetDuration(openFileDialog.FileName);
 
             textBox_file.Text = openFileDialog.FileName;
             textBox_to.Text = ParseTime.Stringify(duration);
@@ -110,7 +110,7 @@ namespace ffmpegGui_SimpleCut
             }
 
             ListSplits.InitializeNames(textBox_file.Text);
-            render.SetData(textBox_file.Text, ListSplits.ToList());
+            await render.SetData(textBox_file.Text, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
             TotalDuration = (int)render.GetTotalDuration();
 
@@ -190,7 +190,7 @@ namespace ffmpegGui_SimpleCut
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             float timeFrom = ParseTime.Parse(textBox_from.Text);
-            float duration = await Render.GetDuration(files[0]);
+            float duration = await MediaInfo.GetDuration(files[0]);
 
             textBox_file.Text = files[0];
 
@@ -247,7 +247,6 @@ namespace ffmpegGui_SimpleCut
             try
             {
                 float timeFrom = ParseTime.Parse(textBox_from.Text);
-                float timeTo = float.Parse(textBox_duration.Text);
                 float duration = float.Parse(textBox_duration.Text);
 
                 ListSplits.Update(timeFrom, duration);
