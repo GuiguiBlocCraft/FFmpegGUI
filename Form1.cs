@@ -33,6 +33,9 @@ namespace ffmpegGui_SimpleCut
             ListSplits.Add(0, 0);
             UpdatePresetOptions(Preset.Medium);
             UpdateComponents();
+
+            if(GraphicUtil.Detect() == "")
+                checkBox_useGC.Enabled = false;
         }
 
         private void btn_openFile_Click(object sender, EventArgs e)
