@@ -18,7 +18,7 @@ namespace ffmpegGui_SimpleCut
 
             if(inputFile != null)
             {
-                textBox_file.Text = inputFile;
+                textBox_file.Text = Path.GetFullPath(inputFile);
             }
 
             openFileDialog.FileOk += OpenFileDialog_FileOk;
