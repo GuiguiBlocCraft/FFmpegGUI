@@ -19,6 +19,7 @@ internal class Render
 
     public bool UseGraphicCard { get; set; } = false;
     public Graphic GraphicMethod { get; set; } = Graphic.Unknown;
+    public Preset Preset { get; set; } = Preset.Medium;
     public StateRender StateRender { get; set; } = StateRender.Idle;
     public string LastErrorMessage { get; set; }
 
@@ -30,7 +31,9 @@ internal class Render
     private string GetArguments()
     {
         string encoder = "";
+        string preset = "";
 
+        // Graphic used
         if(GraphicMethod == Graphic.NVidia)
             encoder = "nvenc";
         else if(GraphicMethod == Graphic.AMD)
@@ -38,8 +41,26 @@ internal class Render
         else if(GraphicMethod == Graphic.Intel)
             encoder = "qsv";
 
+        // Preset used
+        if(Preset == Preset.UltraFast)
+            preset = "ultrafast";
+        else if(Preset == Preset.SuperFast)
+            preset = "superfast";
+        else if(Preset == Preset.VeryFast)
+            preset = "veryfast";
+        else if(Preset == Preset.Faster)
+            preset = "faster";
+        else if(Preset == Preset.Fast)
+            preset = "fast";
+        else if(Preset == Preset.Medium)
+            preset = "medium";
+        else if(Preset == Preset.Slow)
+            preset = "slow";
+        else if(Preset == Preset.Slower)
+            preset = "slower";
+
         return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -i \"{InputFile}\" "
-            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_" + encoder + " " : "")}\"{s.OutputFile}\""));
+            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_" + encoder + " " : "")} -preset {preset} \"{s.OutputFile}\""));
     }
 
     public void SetData(string inputFile, List<Split> splits)

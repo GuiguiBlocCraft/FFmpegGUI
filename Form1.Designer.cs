@@ -52,12 +52,25 @@
             btnAddList = new Button();
             btnRemoveList = new Button();
             lblInfo = new Label();
+            menuStrip1 = new MenuStrip();
+            toolStripMenuItem1 = new ToolStripMenuItem();
+            optionsToolStripMenuItem = new ToolStripMenuItem();
+            presetToolStripMenuItem = new ToolStripMenuItem();
+            ultrafastToolStripMenuItem = new ToolStripMenuItem();
+            superfastToolStripMenuItem = new ToolStripMenuItem();
+            veryFastToolStripMenuItem = new ToolStripMenuItem();
+            fasterToolStripMenuItem = new ToolStripMenuItem();
+            fastToolStripMenuItem = new ToolStripMenuItem();
+            mediumToolStripMenuItem = new ToolStripMenuItem();
+            slowToolStripMenuItem = new ToolStripMenuItem();
+            slowerToolStripMenuItem = new ToolStripMenuItem();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // lblFile
             // 
             lblFile.AutoSize = true;
-            lblFile.Location = new Point(12, 61);
+            lblFile.Location = new Point(12, 81);
             lblFile.Name = "lblFile";
             lblFile.Size = new Size(31, 15);
             lblFile.TabIndex = 0;
@@ -66,7 +79,7 @@
             // textBox_file
             // 
             textBox_file.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBox_file.Location = new Point(49, 58);
+            textBox_file.Location = new Point(49, 78);
             textBox_file.Name = "textBox_file";
             textBox_file.Size = new Size(701, 23);
             textBox_file.TabIndex = 1;
@@ -74,7 +87,7 @@
             // btn_openFile
             // 
             btn_openFile.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_openFile.Location = new Point(756, 58);
+            btn_openFile.Location = new Point(756, 78);
             btn_openFile.Name = "btn_openFile";
             btn_openFile.Size = new Size(32, 23);
             btn_openFile.TabIndex = 2;
@@ -85,7 +98,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(8, 90);
+            label1.Location = new Point(8, 110);
             label1.Name = "label1";
             label1.Size = new Size(60, 15);
             label1.TabIndex = 3;
@@ -94,7 +107,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(176, 90);
+            label2.Location = new Point(176, 110);
             label2.Name = "label2";
             label2.Size = new Size(18, 15);
             label2.TabIndex = 4;
@@ -103,7 +116,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(176, 90);
+            label3.Location = new Point(176, 110);
             label3.Name = "label3";
             label3.Size = new Size(91, 15);
             label3.TabIndex = 5;
@@ -113,7 +126,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(367, 91);
+            label4.Location = new Point(367, 111);
             label4.Name = "label4";
             label4.Size = new Size(50, 15);
             label4.TabIndex = 6;
@@ -122,7 +135,7 @@
             // 
             // textBox_from
             // 
-            textBox_from.Location = new Point(74, 87);
+            textBox_from.Location = new Point(74, 107);
             textBox_from.Name = "textBox_from";
             textBox_from.Size = new Size(96, 23);
             textBox_from.TabIndex = 7;
@@ -131,7 +144,7 @@
             // 
             // textBox_to
             // 
-            textBox_to.Location = new Point(197, 87);
+            textBox_to.Location = new Point(197, 107);
             textBox_to.Name = "textBox_to";
             textBox_to.Size = new Size(96, 23);
             textBox_to.TabIndex = 8;
@@ -140,7 +153,7 @@
             // 
             // textBox_duration
             // 
-            textBox_duration.Location = new Point(268, 87);
+            textBox_duration.Location = new Point(268, 107);
             textBox_duration.Name = "textBox_duration";
             textBox_duration.Size = new Size(96, 23);
             textBox_duration.TabIndex = 9;
@@ -152,7 +165,7 @@
             // btn_Start
             // 
             btn_Start.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btn_Start.Location = new Point(326, 187);
+            btn_Start.Location = new Point(326, 222);
             btn_Start.Name = "btn_Start";
             btn_Start.Size = new Size(148, 33);
             btn_Start.TabIndex = 17;
@@ -164,7 +177,7 @@
             // 
             checkBox_useGC.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBox_useGC.AutoSize = true;
-            checkBox_useGC.Location = new Point(12, 201);
+            checkBox_useGC.Location = new Point(12, 236);
             checkBox_useGC.Name = "checkBox_useGC";
             checkBox_useGC.Size = new Size(158, 19);
             checkBox_useGC.TabIndex = 11;
@@ -175,7 +188,7 @@
             // 
             checkBox_durationMode.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBox_durationMode.AutoSize = true;
-            checkBox_durationMode.Location = new Point(12, 176);
+            checkBox_durationMode.Location = new Point(12, 211);
             checkBox_durationMode.Name = "checkBox_durationMode";
             checkBox_durationMode.Size = new Size(106, 19);
             checkBox_durationMode.TabIndex = 10;
@@ -187,8 +200,8 @@
             // 
             label_Title.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             label_Title.AutoSize = true;
-            label_Title.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point);
-            label_Title.Location = new Point(302, 9);
+            label_Title.Font = new Font("Segoe UI", 24F);
+            label_Title.Location = new Point(302, 29);
             label_Title.Name = "label_Title";
             label_Title.Size = new Size(197, 45);
             label_Title.TabIndex = 14;
@@ -198,8 +211,8 @@
             // 
             label_Author.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label_Author.AutoSize = true;
-            label_Author.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label_Author.Location = new Point(704, 210);
+            label_Author.Font = new Font("Segoe UI", 8.25F);
+            label_Author.Location = new Point(704, 245);
             label_Author.Name = "label_Author";
             label_Author.Size = new Size(88, 13);
             label_Author.TabIndex = 15;
@@ -211,8 +224,8 @@
             // 
             label_createdBy.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label_createdBy.AutoSize = true;
-            label_createdBy.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label_createdBy.Location = new Point(646, 210);
+            label_createdBy.Font = new Font("Segoe UI", 8.25F);
+            label_createdBy.Location = new Point(646, 245);
             label_createdBy.Name = "label_createdBy";
             label_createdBy.Size = new Size(62, 13);
             label_createdBy.TabIndex = 16;
@@ -222,7 +235,7 @@
             // lblPagination
             // 
             lblPagination.AutoSize = true;
-            lblPagination.Location = new Point(8, 122);
+            lblPagination.Location = new Point(8, 142);
             lblPagination.Name = "lblPagination";
             lblPagination.Size = new Size(56, 15);
             lblPagination.TabIndex = 9;
@@ -230,7 +243,7 @@
             // 
             // btnPagePrev
             // 
-            btnPagePrev.Location = new Point(93, 118);
+            btnPagePrev.Location = new Point(93, 138);
             btnPagePrev.Name = "btnPagePrev";
             btnPagePrev.Size = new Size(75, 23);
             btnPagePrev.TabIndex = 10;
@@ -240,7 +253,7 @@
             // 
             // btnPageNext
             // 
-            btnPageNext.Location = new Point(174, 118);
+            btnPageNext.Location = new Point(174, 138);
             btnPageNext.Name = "btnPageNext";
             btnPageNext.Size = new Size(75, 23);
             btnPageNext.TabIndex = 11;
@@ -250,7 +263,7 @@
             // 
             // btnAddList
             // 
-            btnAddList.Location = new Point(255, 118);
+            btnAddList.Location = new Point(255, 138);
             btnAddList.Name = "btnAddList";
             btnAddList.Size = new Size(75, 23);
             btnAddList.TabIndex = 12;
@@ -260,7 +273,7 @@
             // 
             // btnRemoveList
             // 
-            btnRemoveList.Location = new Point(336, 118);
+            btnRemoveList.Location = new Point(336, 138);
             btnRemoveList.Name = "btnRemoveList";
             btnRemoveList.Size = new Size(75, 23);
             btnRemoveList.TabIndex = 13;
@@ -272,19 +285,103 @@
             // 
             lblInfo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblInfo.AutoSize = true;
-            lblInfo.Location = new Point(275, 168);
+            lblInfo.Location = new Point(275, 203);
             lblInfo.MinimumSize = new Size(250, 0);
             lblInfo.Name = "lblInfo";
             lblInfo.Size = new Size(250, 15);
             lblInfo.TabIndex = 18;
             lblInfo.TextAlign = ContentAlignment.TopCenter;
             // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, optionsToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(800, 24);
+            menuStrip1.TabIndex = 19;
+            menuStrip1.Text = "menuStrip";
+            // 
+            // toolStripMenuItem1
+            // 
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new Size(12, 20);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem });
+            optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            optionsToolStripMenuItem.Size = new Size(61, 20);
+            optionsToolStripMenuItem.Text = "&Options";
+            // 
+            // presetToolStripMenuItem
+            // 
+            presetToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ultrafastToolStripMenuItem, superfastToolStripMenuItem, veryFastToolStripMenuItem, fasterToolStripMenuItem, fastToolStripMenuItem, mediumToolStripMenuItem, slowToolStripMenuItem, slowerToolStripMenuItem });
+            presetToolStripMenuItem.Name = "presetToolStripMenuItem";
+            presetToolStripMenuItem.Size = new Size(180, 22);
+            presetToolStripMenuItem.Text = "&Preset";
+            // 
+            // ultrafastToolStripMenuItem
+            // 
+            ultrafastToolStripMenuItem.Name = "ultrafastToolStripMenuItem";
+            ultrafastToolStripMenuItem.Size = new Size(180, 22);
+            ultrafastToolStripMenuItem.Text = "&Ultra fast";
+            ultrafastToolStripMenuItem.Click += ultrafastToolStripMenuItem_Click;
+            // 
+            // superfastToolStripMenuItem
+            // 
+            superfastToolStripMenuItem.Name = "superfastToolStripMenuItem";
+            superfastToolStripMenuItem.Size = new Size(180, 22);
+            superfastToolStripMenuItem.Text = "&Super fast";
+            superfastToolStripMenuItem.Click += superfastToolStripMenuItem_Click;
+            // 
+            // veryFastToolStripMenuItem
+            // 
+            veryFastToolStripMenuItem.Name = "veryFastToolStripMenuItem";
+            veryFastToolStripMenuItem.Size = new Size(180, 22);
+            veryFastToolStripMenuItem.Text = "&Very fast";
+            veryFastToolStripMenuItem.Click += veryFastToolStripMenuItem_Click;
+            // 
+            // fasterToolStripMenuItem
+            // 
+            fasterToolStripMenuItem.Name = "fasterToolStripMenuItem";
+            fasterToolStripMenuItem.Size = new Size(180, 22);
+            fasterToolStripMenuItem.Text = "F&aster";
+            fasterToolStripMenuItem.Click += fasterToolStripMenuItem_Click;
+            // 
+            // fastToolStripMenuItem
+            // 
+            fastToolStripMenuItem.Name = "fastToolStripMenuItem";
+            fastToolStripMenuItem.Size = new Size(180, 22);
+            fastToolStripMenuItem.Text = "&Fast";
+            fastToolStripMenuItem.Click += fastToolStripMenuItem_Click;
+            // 
+            // mediumToolStripMenuItem
+            // 
+            mediumToolStripMenuItem.Name = "mediumToolStripMenuItem";
+            mediumToolStripMenuItem.Size = new Size(180, 22);
+            mediumToolStripMenuItem.Text = "&Medium";
+            mediumToolStripMenuItem.Click += mediumToolStripMenuItem_Click;
+            // 
+            // slowToolStripMenuItem
+            // 
+            slowToolStripMenuItem.Name = "slowToolStripMenuItem";
+            slowToolStripMenuItem.Size = new Size(180, 22);
+            slowToolStripMenuItem.Text = "&Slow";
+            slowToolStripMenuItem.Click += slowToolStripMenuItem_Click;
+            // 
+            // slowerToolStripMenuItem
+            // 
+            slowerToolStripMenuItem.Name = "slowerToolStripMenuItem";
+            slowerToolStripMenuItem.Size = new Size(180, 22);
+            slowerToolStripMenuItem.Text = "S&lower";
+            slowerToolStripMenuItem.Click += slowerToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 232);
+            ClientSize = new Size(800, 267);
             Controls.Add(lblInfo);
             Controls.Add(btnRemoveList);
             Controls.Add(btnAddList);
@@ -307,14 +404,18 @@
             Controls.Add(btn_openFile);
             Controls.Add(textBox_file);
             Controls.Add(lblFile);
+            Controls.Add(menuStrip1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MainMenuStrip = menuStrip1;
             MaximizeBox = false;
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "FFmpeg GUI";
             DragDrop += Form1_DragDrop;
             DragEnter += Form1_DragEnter;
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -344,5 +445,17 @@
         private Button btnAddList;
         private Button btnRemoveList;
         private Label lblInfo;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem optionsToolStripMenuItem;
+        private ToolStripMenuItem presetToolStripMenuItem;
+        private ToolStripMenuItem ultrafastToolStripMenuItem;
+        private ToolStripMenuItem superfastToolStripMenuItem;
+        private ToolStripMenuItem veryFastToolStripMenuItem;
+        private ToolStripMenuItem fasterToolStripMenuItem;
+        private ToolStripMenuItem fastToolStripMenuItem;
+        private ToolStripMenuItem mediumToolStripMenuItem;
+        private ToolStripMenuItem slowToolStripMenuItem;
+        private ToolStripMenuItem slowerToolStripMenuItem;
     }
 }

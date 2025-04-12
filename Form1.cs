@@ -10,6 +10,7 @@ namespace ffmpegGui_SimpleCut
         private System.Timers.Timer Timer;
         private Render render;
         private int TotalDuration = 0;
+        private Preset Preset;
 
         public Form1(string inputFile = null)
         {
@@ -30,6 +31,7 @@ namespace ffmpegGui_SimpleCut
             }
 
             ListSplits.Add(0, 0);
+            UpdatePresetOptions(Preset.Medium);
             UpdateComponents();
         }
 
@@ -112,6 +114,7 @@ namespace ffmpegGui_SimpleCut
             ListSplits.InitializeNames(textBox_file.Text);
             render.SetData(textBox_file.Text, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
+            render.Preset = Preset;
             TotalDuration = (int)render.GetTotalDuration();
             await render.DetectAndSetValue();
 
@@ -316,9 +319,64 @@ namespace ffmpegGui_SimpleCut
             }
         }
 
+        private void UpdatePresetOptions(Preset preset)
+        {
+            Preset = preset;
+
+            ultrafastToolStripMenuItem.Checked = Preset == Preset.UltraFast;
+            superfastToolStripMenuItem.Checked = Preset == Preset.SuperFast;
+            veryFastToolStripMenuItem.Checked = Preset == Preset.VeryFast;
+            fasterToolStripMenuItem.Checked = Preset == Preset.Faster;
+            fastToolStripMenuItem.Checked = Preset == Preset.Fast;
+            mediumToolStripMenuItem.Checked = Preset == Preset.Medium;
+            slowToolStripMenuItem.Checked = Preset == Preset.Slow;
+            slowerToolStripMenuItem.Checked = Preset == Preset.Slower;
+        }
+
         public void SetTitleVersion(Version version)
         {
             Text += $" ({version.Major}.{version.Minor}.{version.Build})";
+        }
+
+        // Menu items - Preset's option
+        private void ultrafastToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePresetOptions(Preset.UltraFast);
+        }
+
+        private void superfastToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePresetOptions(Preset.SuperFast);
+        }
+
+        private void veryFastToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePresetOptions(Preset.VeryFast);
+        }
+
+        private void fasterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePresetOptions(Preset.Faster);
+        }
+
+        private void fastToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePresetOptions(Preset.Fast);
+        }
+
+        private void mediumToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePresetOptions(Preset.Medium);
+        }
+
+        private void slowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePresetOptions(Preset.Slow);
+        }
+
+        private void slowerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePresetOptions(Preset.Slower);
         }
     }
 }
