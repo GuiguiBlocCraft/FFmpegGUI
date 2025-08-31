@@ -114,12 +114,21 @@ namespace ffmpegGui_SimpleCut
                 }
             }
 
+            bool getArgsOnly = ModifierKeys == Keys.Shift;
+
             ListSplits.InitializeNames(textBox_file.Text);
             render.SetData(textBox_file.Text, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
             render.Preset = Preset;
             TotalDuration = (int)render.GetTotalDuration();
             await render.DetectAndSetValue();
+
+            if(getArgsOnly)
+            {
+                Clipboard.SetText(Render.FFmpeg + render.GetArguments());
+                MessageBox.Show("ffmpeg command copied in clipboard");
+                return;
+            }
 
             string oldText = btn_Start.Text;
 
@@ -152,7 +161,7 @@ namespace ffmpegGui_SimpleCut
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Error);
                 lblInfo.Text = "Error on render!";
 
-                MessageBox.Show($"FFmpeg was killed!({render.LastErrorMessage})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"FFmpeg was killed! ({render.LastErrorMessage})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {

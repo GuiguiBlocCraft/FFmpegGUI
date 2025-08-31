@@ -28,12 +28,12 @@ internal class Render
         Progress = e;
     }
 
-    private string GetArguments()
+    public string GetArguments()
     {
         string encoder = "";
         string preset = "";
 
-        // Graphic used
+        // Encoder used
         if(GraphicMethod == Graphic.NVidia)
             encoder = "nvenc";
         else if(GraphicMethod == Graphic.AMD)
