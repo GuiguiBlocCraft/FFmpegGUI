@@ -64,7 +64,14 @@
             mediumToolStripMenuItem = new ToolStripMenuItem();
             slowToolStripMenuItem = new ToolStripMenuItem();
             slowerToolStripMenuItem = new ToolStripMenuItem();
+            panelPlayerVideo = new Panel();
+            panelPlayerButtons = new Panel();
+            trackBar_Player = new TrackBar();
+            label_Position = new Label();
+            btn_VideoPlay = new Button();
             menuStrip1.SuspendLayout();
+            panelPlayerButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar_Player).BeginInit();
             SuspendLayout();
             // 
             // lblFile
@@ -165,7 +172,7 @@
             // btn_Start
             // 
             btn_Start.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btn_Start.Location = new Point(326, 222);
+            btn_Start.Location = new Point(326, 682);
             btn_Start.Name = "btn_Start";
             btn_Start.Size = new Size(148, 33);
             btn_Start.TabIndex = 17;
@@ -177,7 +184,7 @@
             // 
             checkBox_useGC.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBox_useGC.AutoSize = true;
-            checkBox_useGC.Location = new Point(12, 236);
+            checkBox_useGC.Location = new Point(12, 696);
             checkBox_useGC.Name = "checkBox_useGC";
             checkBox_useGC.Size = new Size(158, 19);
             checkBox_useGC.TabIndex = 11;
@@ -188,7 +195,7 @@
             // 
             checkBox_durationMode.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBox_durationMode.AutoSize = true;
-            checkBox_durationMode.Location = new Point(12, 211);
+            checkBox_durationMode.Location = new Point(12, 671);
             checkBox_durationMode.Name = "checkBox_durationMode";
             checkBox_durationMode.Size = new Size(106, 19);
             checkBox_durationMode.TabIndex = 10;
@@ -212,7 +219,7 @@
             label_Author.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label_Author.AutoSize = true;
             label_Author.Font = new Font("Segoe UI", 8.25F);
-            label_Author.Location = new Point(704, 245);
+            label_Author.Location = new Point(704, 705);
             label_Author.Name = "label_Author";
             label_Author.Size = new Size(88, 13);
             label_Author.TabIndex = 15;
@@ -225,7 +232,7 @@
             label_createdBy.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label_createdBy.AutoSize = true;
             label_createdBy.Font = new Font("Segoe UI", 8.25F);
-            label_createdBy.Location = new Point(646, 245);
+            label_createdBy.Location = new Point(646, 705);
             label_createdBy.Name = "label_createdBy";
             label_createdBy.Size = new Size(62, 13);
             label_createdBy.TabIndex = 16;
@@ -285,7 +292,7 @@
             // 
             lblInfo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblInfo.AutoSize = true;
-            lblInfo.Location = new Point(275, 203);
+            lblInfo.Location = new Point(275, 663);
             lblInfo.MinimumSize = new Size(250, 0);
             lblInfo.Name = "lblInfo";
             lblInfo.Size = new Size(250, 15);
@@ -376,12 +383,63 @@
             slowerToolStripMenuItem.Text = "S&lower";
             slowerToolStripMenuItem.Click += slowerToolStripMenuItem_Click;
             // 
+            // panelPlayerVideo
+            // 
+            panelPlayerVideo.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panelPlayerVideo.Location = new Point(12, 177);
+            panelPlayerVideo.Name = "panelPlayerVideo";
+            panelPlayerVideo.Size = new Size(776, 400);
+            panelPlayerVideo.TabIndex = 20;
+            // 
+            // panelPlayerButtons
+            // 
+            panelPlayerButtons.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panelPlayerButtons.Controls.Add(trackBar_Player);
+            panelPlayerButtons.Controls.Add(label_Position);
+            panelPlayerButtons.Controls.Add(btn_VideoPlay);
+            panelPlayerButtons.Location = new Point(12, 581);
+            panelPlayerButtons.Name = "panelPlayerButtons";
+            panelPlayerButtons.Size = new Size(776, 79);
+            panelPlayerButtons.TabIndex = 21;
+            // 
+            // trackBar_Player
+            // 
+            trackBar_Player.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            trackBar_Player.Location = new Point(0, 1);
+            trackBar_Player.Name = "trackBar_Player";
+            trackBar_Player.Size = new Size(775, 45);
+            trackBar_Player.TabIndex = 2;
+            trackBar_Player.Scroll += trackBar_Player_Scroll;
+            // 
+            // label_Position
+            // 
+            label_Position.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label_Position.AutoSize = true;
+            label_Position.Location = new Point(7, 55);
+            label_Position.Name = "label_Position";
+            label_Position.Size = new Size(53, 15);
+            label_Position.TabIndex = 1;
+            label_Position.Text = "Position:";
+            // 
+            // btn_VideoPlay
+            // 
+            btn_VideoPlay.Anchor = AnchorStyles.Bottom;
+            btn_VideoPlay.Location = new Point(351, 52);
+            btn_VideoPlay.Name = "btn_VideoPlay";
+            btn_VideoPlay.Size = new Size(75, 23);
+            btn_VideoPlay.TabIndex = 0;
+            btn_VideoPlay.Text = "Play";
+            btn_VideoPlay.UseVisualStyleBackColor = true;
+            btn_VideoPlay.Click += btn_VideoPlay_Click;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 267);
+            ClientSize = new Size(800, 727);
+            Controls.Add(panelPlayerButtons);
+            Controls.Add(panelPlayerVideo);
             Controls.Add(lblInfo);
             Controls.Add(btnRemoveList);
             Controls.Add(btnAddList);
@@ -408,14 +466,17 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
-            MaximizeBox = false;
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "FFmpeg GUI";
+            Load += Form1_Load;
             DragDrop += Form1_DragDrop;
             DragEnter += Form1_DragEnter;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            panelPlayerButtons.ResumeLayout(false);
+            panelPlayerButtons.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar_Player).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -457,5 +518,10 @@
         private ToolStripMenuItem mediumToolStripMenuItem;
         private ToolStripMenuItem slowToolStripMenuItem;
         private ToolStripMenuItem slowerToolStripMenuItem;
+        private Panel panelPlayerVideo;
+        private Panel panelPlayerButtons;
+        private Button btn_VideoPlay;
+        private Label label_Position;
+        private TrackBar trackBar_Player;
     }
 }

@@ -15,7 +15,7 @@ internal class ParseTime
         return (hours * 3600) + (minutes * 60) + seconds;
     }
 
-    public static string Stringify(float time)
+    public static string Stringify(float time, bool displayPrecision = true)
     {
         int hours = (int)Math.Floor(time / 3600);
         int minutes = (int)Math.Floor(time / 60) % 60;
@@ -30,8 +30,12 @@ internal class ParseTime
 
         if(seconds < 10)
             result += "0";
-        result += seconds.ToString("N2", CultureInfo.InvariantCulture);
 
-        return result;
+        if(displayPrecision)
+            result += seconds.ToString("N2", CultureInfo.InvariantCulture);
+        else
+            result += (int)seconds;
+
+            return result;
     }
 }

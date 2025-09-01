@@ -1,6 +1,7 @@
+using LibVLCSharp.Shared;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Diagnostics;
 using System.Globalization;
-using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace ffmpegGui_SimpleCut
 {
@@ -12,9 +13,16 @@ namespace ffmpegGui_SimpleCut
         private int TotalDuration = 0;
         private Preset Preset;
 
+        private LibVLC _libVLC;
+        private MediaPlayer _mediaPlayer;
+
+        private SynchronizationContext _ui;
+
         public Form1(string inputFile = null)
         {
             InitializeComponent();
+            Core.Initialize();
+            _ui = SynchronizationContext.Current ?? new WindowsFormsSynchronizationContext();
 
             if(inputFile != null)
             {
@@ -36,6 +44,24 @@ namespace ffmpegGui_SimpleCut
 
             if(GraphicUtil.Detect() == "")
                 checkBox_useGC.Enabled = false;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Initialize LibVLC
+            _libVLC = new LibVLC();
+            _mediaPlayer = new MediaPlayer(_libVLC)
+            {
+                Hwnd = panelPlayerVideo.Handle
+            };
+
+            _mediaPlayer.Playing += (_, __) => _ui.Post(_ => _mediaPlayer_Playing(), null);
+            _mediaPlayer.Paused += (_, __) => _ui.Post(_ => _mediaPlayer_Paused(), null);
+            _mediaPlayer.Stopped += (_, __) => _ui.Post(_ => _mediaPlayer_Stopped(), null);
+            _mediaPlayer.PositionChanged += (_, __) => _ui.Post(_ => _mediaPlayer_PositionChanged(true), null);
+            _mediaPlayer.LengthChanged += (_, __) => _ui.Post(_ => _mediaPlayer_LengthChanged(), null);
+
+            _mediaPlayer_PositionChanged(false);
         }
 
         private void btn_openFile_Click(object sender, EventArgs e)
@@ -309,11 +335,49 @@ namespace ffmpegGui_SimpleCut
             textBox_from.Text = ParseTime.Stringify(split.StartPos);
             textBox_to.Text = ParseTime.Stringify(split.StartPos + split.Duration);
             textBox_duration.Text = split.Duration.ToString();
+
+            if(_libVLC != null)
+            {
+                using var media = new Media(_libVLC, textBox_file.Text);
+                _mediaPlayer.Play(media);
+                _mediaPlayer.SetPause(true);
+            }
+        }
+
+        private void _mediaPlayer_Playing()
+        {
+            btn_VideoPlay.Text = "Pause";
+        }
+
+        private void _mediaPlayer_Paused()
+        {
+            btn_VideoPlay.Text = "Play";
+        }
+
+        private void _mediaPlayer_Stopped()
+        {
+            btn_VideoPlay.Text = "Play";
+            _mediaPlayer.Position = 0;
+        }
+
+        private void _mediaPlayer_PositionChanged(bool updateTrackBar)
+        {
+            float length = _mediaPlayer.Length / 1000;
+            float position = _mediaPlayer.Position * length;
+
+            label_Position.Text = $"Position: {ParseTime.Stringify(position, false)} / {ParseTime.Stringify(length, false)}";
+            if(updateTrackBar)
+                trackBar_Player.Value = (int)(_mediaPlayer.Position * trackBar_Player.Maximum);
+        }
+
+        private void _mediaPlayer_LengthChanged()
+        {
+            trackBar_Player.Maximum = (int)_mediaPlayer.Length / 1000;
         }
 
         private void UpdateButtonStart(object source, System.Timers.ElapsedEventArgs e)
         {
-            if (render?.Progress != null)
+            if(render?.Progress != null)
             {
                 try
                 {
@@ -389,6 +453,29 @@ namespace ffmpegGui_SimpleCut
         private void slowerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UpdatePresetOptions(Preset.Slower);
+        }
+
+        // Video player - Buttons
+        private void btn_VideoPlay_Click(object sender, EventArgs e)
+        {
+            if(_mediaPlayer.IsPlaying)
+            {
+                _mediaPlayer.Pause();
+            }
+            else if(_mediaPlayer.Position < 1)
+            {
+                _mediaPlayer.Play();
+            }
+            else
+            {
+                _mediaPlayer.Play(_mediaPlayer.Media);
+            }
+        }
+
+        private void trackBar_Player_Scroll(object sender, EventArgs e)
+        {
+            _mediaPlayer.Position = (float)trackBar_Player.Value / trackBar_Player.Maximum;
+            _mediaPlayer_PositionChanged(false);
         }
     }
 }
