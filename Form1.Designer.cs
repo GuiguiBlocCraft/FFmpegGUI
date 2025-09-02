@@ -66,6 +66,8 @@
             slowerToolStripMenuItem = new ToolStripMenuItem();
             panelPlayerVideo = new Panel();
             panelPlayerButtons = new Panel();
+            btn_TakePositionEnd = new Button();
+            btn_TakePositionStart = new Button();
             trackBar_Player = new TrackBar();
             label_Position = new Label();
             btn_VideoPlay = new Button();
@@ -394,6 +396,8 @@
             // panelPlayerButtons
             // 
             panelPlayerButtons.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panelPlayerButtons.Controls.Add(btn_TakePositionEnd);
+            panelPlayerButtons.Controls.Add(btn_TakePositionStart);
             panelPlayerButtons.Controls.Add(trackBar_Player);
             panelPlayerButtons.Controls.Add(label_Position);
             panelPlayerButtons.Controls.Add(btn_VideoPlay);
@@ -402,13 +406,35 @@
             panelPlayerButtons.Size = new Size(776, 79);
             panelPlayerButtons.TabIndex = 21;
             // 
+            // btn_TakePositionEnd
+            // 
+            btn_TakePositionEnd.Anchor = AnchorStyles.Bottom;
+            btn_TakePositionEnd.Location = new Point(430, 52);
+            btn_TakePositionEnd.Name = "btn_TakePositionEnd";
+            btn_TakePositionEnd.Size = new Size(75, 23);
+            btn_TakePositionEnd.TabIndex = 2;
+            btn_TakePositionEnd.Text = "Take end";
+            btn_TakePositionEnd.UseVisualStyleBackColor = true;
+            btn_TakePositionEnd.Click += btn_TakePositionEnd_Click;
+            // 
+            // btn_TakePositionStart
+            // 
+            btn_TakePositionStart.Anchor = AnchorStyles.Bottom;
+            btn_TakePositionStart.Location = new Point(351, 52);
+            btn_TakePositionStart.Name = "btn_TakePositionStart";
+            btn_TakePositionStart.Size = new Size(75, 23);
+            btn_TakePositionStart.TabIndex = 1;
+            btn_TakePositionStart.Text = "Take start";
+            btn_TakePositionStart.UseVisualStyleBackColor = true;
+            btn_TakePositionStart.Click += btn_TakePositionStart_Click;
+            // 
             // trackBar_Player
             // 
             trackBar_Player.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             trackBar_Player.Location = new Point(0, 1);
             trackBar_Player.Name = "trackBar_Player";
             trackBar_Player.Size = new Size(775, 45);
-            trackBar_Player.TabIndex = 2;
+            trackBar_Player.TabIndex = 3;
             trackBar_Player.Scroll += trackBar_Player_Scroll;
             // 
             // label_Position
@@ -418,13 +444,13 @@
             label_Position.Location = new Point(7, 55);
             label_Position.Name = "label_Position";
             label_Position.Size = new Size(53, 15);
-            label_Position.TabIndex = 1;
+            label_Position.TabIndex = 4;
             label_Position.Text = "Position:";
             // 
             // btn_VideoPlay
             // 
             btn_VideoPlay.Anchor = AnchorStyles.Bottom;
-            btn_VideoPlay.Location = new Point(351, 52);
+            btn_VideoPlay.Location = new Point(272, 52);
             btn_VideoPlay.Name = "btn_VideoPlay";
             btn_VideoPlay.Size = new Size(75, 23);
             btn_VideoPlay.TabIndex = 0;
@@ -463,7 +489,6 @@
             Controls.Add(textBox_file);
             Controls.Add(lblFile);
             Controls.Add(menuStrip1);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Name = "Form1";
@@ -523,5 +548,7 @@
         private Button btn_VideoPlay;
         private Label label_Position;
         private TrackBar trackBar_Player;
+        private Button btn_TakePositionStart;
+        private Button btn_TakePositionEnd;
     }
 }

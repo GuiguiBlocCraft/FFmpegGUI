@@ -41,6 +41,8 @@ namespace ffmpegGui_SimpleCut
             ListSplits.Add(0, 0);
             UpdatePresetOptions(Preset.Medium);
             UpdateComponents();
+            LoadVideo();
+            SetStatePlayer(false);
 
             if(GraphicUtil.Detect() == "")
                 checkBox_useGC.Enabled = false;
@@ -64,6 +66,20 @@ namespace ffmpegGui_SimpleCut
             _mediaPlayer_PositionChanged(false);
         }
 
+        private void LoadVideo()
+        {
+            if(_libVLC != null)
+            {
+                using var media = new Media(_libVLC, textBox_file.Text);
+                _mediaPlayer.Play(media);
+                _mediaPlayer.SetPause(true);
+                _mediaPlayer.Position = 0;
+
+                _mediaPlayer_PositionChanged(true);
+                SetStatePlayer(true);
+            }
+        }
+
         private void btn_openFile_Click(object sender, EventArgs e)
         {
             openFileDialog.FileName = "";
@@ -82,6 +98,7 @@ namespace ffmpegGui_SimpleCut
 
             ListSplits.Update(timeFrom, duration);
             UpdateComponents();
+            LoadVideo();
         }
 
         private async void btn_Start_Click(object sender, EventArgs e)
@@ -238,6 +255,7 @@ namespace ffmpegGui_SimpleCut
 
             ListSplits.Update(timeFrom, duration);
             UpdateComponents();
+            LoadVideo();
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
@@ -254,34 +272,12 @@ namespace ffmpegGui_SimpleCut
 
         private void textBox_from_Validated(object sender, EventArgs e)
         {
-            try
-            {
-                float timeTo = ParseTime.Parse(textBox_to.Text);
-                float timeFrom = ParseTime.Parse(textBox_from.Text);
-
-                ListSplits.Update(timeFrom, timeTo - timeFrom);
-                UpdateComponents();
-            }
-            catch(FormatException)
-            {
-                UpdateComponents();
-            }
+            UpdateTextTime();
         }
 
         private void textBox_to_Validated(object sender, EventArgs e)
         {
-            try
-            {
-                float timeTo = ParseTime.Parse(textBox_to.Text);
-                float timeFrom = ParseTime.Parse(textBox_from.Text);
-
-                ListSplits.Update(timeFrom, timeTo - timeFrom);
-                UpdateComponents();
-            }
-            catch(FormatException)
-            {
-                UpdateComponents();
-            }
+            UpdateTextTime();
         }
 
         private void textBox_duration_Validated(object sender, EventArgs e)
@@ -335,13 +331,6 @@ namespace ffmpegGui_SimpleCut
             textBox_from.Text = ParseTime.Stringify(split.StartPos);
             textBox_to.Text = ParseTime.Stringify(split.StartPos + split.Duration);
             textBox_duration.Text = split.Duration.ToString();
-
-            if(_libVLC != null)
-            {
-                using var media = new Media(_libVLC, textBox_file.Text);
-                _mediaPlayer.Play(media);
-                _mediaPlayer.SetPause(true);
-            }
         }
 
         private void _mediaPlayer_Playing()
@@ -409,6 +398,22 @@ namespace ffmpegGui_SimpleCut
             slowerToolStripMenuItem.Checked = Preset == Preset.Slower;
         }
 
+        private void UpdateTextTime()
+        {
+            try
+            {
+                float timeTo = ParseTime.Parse(textBox_to.Text);
+                float timeFrom = ParseTime.Parse(textBox_from.Text);
+
+                ListSplits.Update(timeFrom, timeTo - timeFrom);
+                UpdateComponents();
+            }
+            catch(FormatException)
+            {
+                UpdateComponents();
+            }
+        }
+
         public void SetTitleVersion(Version version)
         {
             Text += $" ({version.Major}.{version.Minor}.{version.Build})";
@@ -472,10 +477,30 @@ namespace ffmpegGui_SimpleCut
             }
         }
 
+        private void btn_TakePositionStart_Click(object sender, EventArgs e)
+        {
+            textBox_from.Text = ParseTime.Stringify((_mediaPlayer.Length / 1000) * _mediaPlayer.Position);
+            UpdateTextTime();
+        }
+
+        private void btn_TakePositionEnd_Click(object sender, EventArgs e)
+        {
+            textBox_to.Text = ParseTime.Stringify((_mediaPlayer.Length / 1000) * _mediaPlayer.Position);
+            UpdateTextTime();
+        }
+
         private void trackBar_Player_Scroll(object sender, EventArgs e)
         {
             _mediaPlayer.Position = (float)trackBar_Player.Value / trackBar_Player.Maximum;
             _mediaPlayer_PositionChanged(false);
+        }
+
+        private void SetStatePlayer(bool state)
+        {
+            trackBar_Player.Enabled = state;
+            btn_VideoPlay.Enabled = state;
+            btn_TakePositionStart.Enabled = state;
+            btn_TakePositionEnd.Enabled = state;
         }
     }
 }
