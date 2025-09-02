@@ -7,10 +7,14 @@ namespace ffmpegGui_SimpleCut
 {
     public partial class Form1 : Form
     {
+        private FormLoading FormLoading = new FormLoading();
         private ListSplits ListSplits = new ListSplits();
+
+        private string FileName = "";
         private System.Timers.Timer Timer;
         private Render render;
         private int TotalDuration = 0;
+        private bool PlayerStopped = true;
         private Preset Preset;
 
         private LibVLC _libVLC;
@@ -18,38 +22,35 @@ namespace ffmpegGui_SimpleCut
 
         private SynchronizationContext _ui;
 
-        public Form1(string inputFile = null)
+        public Form1()
         {
             InitializeComponent();
             Core.Initialize();
             _ui = SynchronizationContext.Current ?? new WindowsFormsSynchronizationContext();
+        }
 
-            if(inputFile != null)
-            {
-                textBox_file.Text = Path.GetFullPath(inputFile);
-            }
-
-            openFileDialog.FileOk += OpenFileDialog_FileOk;
-
-            // Check ffmpeg and ffprobe
-            if(!FileUtils.IsFileExistsInPath(Render.FFmpeg) || !FileUtils.IsFileExistsInPath(Render.FFprobe))
-            {
-                MessageBox.Show("FFmpeg was not found in your PATH. Please install it before launch this app.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(1);
-            }
-
-            ListSplits.Add(0, 0);
-            UpdatePresetOptions(Preset.Medium);
-            UpdateComponents();
-            LoadVideo();
-            SetStatePlayer(false);
-
-            if(GraphicUtil.Detect() == "")
-                checkBox_useGC.Enabled = false;
+        public void SetFileName(string filename)
+        {
+            FileName = filename;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Display loading
+            FormLoading.TopMost = true;
+            FormLoading.Show();
+
+            // Initialize somes composants
+            openFileDialog.FileOk += OpenFileDialog_FileOk;
+
+            ListSplits.Add(0, 0);
+            UpdatePresetOptions(Preset.Medium);
+            UpdateComponents();
+            SetStatePlayer(false);
+
+            if(GraphicUtil.Detect() == "")
+                checkBox_useGC.Enabled = false;
+
             // Initialize LibVLC
             _libVLC = new LibVLC();
             _mediaPlayer = new MediaPlayer(_libVLC)
@@ -64,6 +65,15 @@ namespace ffmpegGui_SimpleCut
             _mediaPlayer.LengthChanged += (_, __) => _ui.Post(_ => _mediaPlayer_LengthChanged(), null);
 
             _mediaPlayer_PositionChanged(false);
+
+            // Initialize in argument
+            if(!string.IsNullOrEmpty(FileName))
+            {
+                textBox_file.Text = FileName;
+                LoadVideo();
+            }
+
+            FormLoading.Close();
         }
 
         private void LoadVideo()
@@ -336,17 +346,19 @@ namespace ffmpegGui_SimpleCut
         private void _mediaPlayer_Playing()
         {
             btn_VideoPlay.Text = "Pause";
+            PlayerStopped = false;
         }
 
         private void _mediaPlayer_Paused()
         {
             btn_VideoPlay.Text = "Play";
+            PlayerStopped = false;
         }
 
         private void _mediaPlayer_Stopped()
         {
             btn_VideoPlay.Text = "Play";
-            _mediaPlayer.Position = 0;
+            PlayerStopped = true;
         }
 
         private void _mediaPlayer_PositionChanged(bool updateTrackBar)
@@ -467,13 +479,14 @@ namespace ffmpegGui_SimpleCut
             {
                 _mediaPlayer.Pause();
             }
-            else if(_mediaPlayer.Position < 1)
+            else if(PlayerStopped)
             {
-                _mediaPlayer.Play();
+                _mediaPlayer.Position = 0;
+                _mediaPlayer.Play(_mediaPlayer.Media);
             }
             else
             {
-                _mediaPlayer.Play(_mediaPlayer.Media);
+                _mediaPlayer.Play();
             }
         }
 
