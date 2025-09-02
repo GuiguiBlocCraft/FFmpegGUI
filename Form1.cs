@@ -117,6 +117,7 @@ namespace ffmpegGui_SimpleCut
             if(render != null && render.StateRender == StateRender.Running)
             {
                 render.Stop();
+                SetStatePlayer(true);
                 return;
             }
 
@@ -194,10 +195,14 @@ namespace ffmpegGui_SimpleCut
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate);
             lblInfo.Text = "Rendering...";
 
+            SetStatePlayer(false);
+
             await render.Execute();
 
             Timer.Enabled = false;
             btn_Start.Text = oldText;
+
+            SetStatePlayer(true);
 
             if(render.StateRender == StateRender.Cancelled)
             {
@@ -514,6 +519,20 @@ namespace ffmpegGui_SimpleCut
             btn_VideoPlay.Enabled = state;
             btn_TakePositionStart.Enabled = state;
             btn_TakePositionEnd.Enabled = state;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(render?.StateRender == StateRender.Running)
+            {
+                e.Cancel = true;
+                MessageBox.Show("A render is running. You must cancel this before to quit.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                _mediaPlayer?.Dispose();
+                _libVLC?.Dispose();
+            }
         }
     }
 }

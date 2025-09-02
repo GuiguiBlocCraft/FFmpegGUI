@@ -494,6 +494,7 @@
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "FFmpeg GUI";
+            FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             DragDrop += Form1_DragDrop;
             DragEnter += Form1_DragEnter;
