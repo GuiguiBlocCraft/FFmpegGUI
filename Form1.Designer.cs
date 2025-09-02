@@ -173,7 +173,7 @@
             // 
             // btn_Start
             // 
-            btn_Start.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btn_Start.Anchor = AnchorStyles.Bottom;
             btn_Start.Location = new Point(326, 682);
             btn_Start.Name = "btn_Start";
             btn_Start.Size = new Size(148, 33);
