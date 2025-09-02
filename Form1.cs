@@ -188,7 +188,7 @@ namespace ffmpegGui_SimpleCut
 
             Timer = new System.Timers.Timer();
             Timer.Interval = 50;
-            Timer.Elapsed += UpdateButtonStart;
+            Timer.Elapsed += (_, __) => _ui.Post(_ => UpdateButtonStart(), null);
             Timer.Enabled = true;
 
             btn_Start.Text = "Cancel render";
@@ -381,23 +381,19 @@ namespace ffmpegGui_SimpleCut
             trackBar_Player.Maximum = (int)_mediaPlayer.Length / 1000;
         }
 
-        private void UpdateButtonStart(object source, System.Timers.ElapsedEventArgs e)
+        private void UpdateButtonStart()
         {
             if(render?.Progress != null)
             {
-                try
-                {
-                    var time = render.Progress.ProcessedDuration;
-                    string strTime = time.Hours + "h"
-                        + (time.Minutes < 10 ? "0" : "") + time.Minutes + ":"
-                        + (time.Seconds < 10 ? "0" : "") + time.Seconds;
+                var time = render.Progress.ProcessedDuration;
+                string strTime = time.Hours + "h"
+                    + (time.Minutes < 10 ? "0" : "") + time.Minutes + ":"
+                    + (time.Seconds < 10 ? "0" : "") + time.Seconds;
 
-                    lblInfo.Text = $"{render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)";
+                lblInfo.Text = $"{render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)";
 
-                    TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
-                    TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, TotalDuration);
-                }
-                catch(Exception) { }
+                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
+                TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, TotalDuration);
             }
         }
 
