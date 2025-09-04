@@ -100,8 +100,13 @@ namespace ffmpegGui_SimpleCut
 
                 _mediaPlayer_PositionChanged(true);
                 SetStatePlayer(true);
-                lblInfo.Text = $"File loaded: {FileName}";
+                DisplayInfo($"File loaded: {FileName}");
             }
+        }
+
+        private void DisplayInfo(string str)
+        {
+            lblInfo.Text = str;
         }
 
         private async void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -217,7 +222,7 @@ namespace ffmpegGui_SimpleCut
 
             btn_Start.Text = "Cancel render";
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate);
-            lblInfo.Text = "Rendering...";
+            DisplayInfo("Rendering...");
 
             SetStatePlayer(false);
 
@@ -231,7 +236,7 @@ namespace ffmpegGui_SimpleCut
             if(render.StateRender == StateRender.Cancelled)
             {
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
-                lblInfo.Text = "Render cancelled!";
+                DisplayInfo("Render cancelled!");
 
                 foreach(Split split in render.GetSplits())
                 {
@@ -241,14 +246,14 @@ namespace ffmpegGui_SimpleCut
             else if(render.StateRender == StateRender.Error)
             {
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Error);
-                lblInfo.Text = "Error on render!";
+                DisplayInfo("Error on render!");
 
                 MessageBox.Show($"FFmpeg was killed! ({render.LastErrorMessage})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
-                lblInfo.Text = "Render done!";
+                DisplayInfo("Render done!");
             }
         }
 
@@ -414,7 +419,7 @@ namespace ffmpegGui_SimpleCut
                     + (time.Minutes < 10 ? "0" : "") + time.Minutes + ":"
                     + (time.Seconds < 10 ? "0" : "") + time.Seconds;
 
-                lblInfo.Text = $"{render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)";
+                DisplayInfo($"{render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)");
 
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
                 TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, TotalDuration);
@@ -534,13 +539,19 @@ namespace ffmpegGui_SimpleCut
 
         private void btn_TakePositionStart_Click(object sender, EventArgs e)
         {
-            textBox_from.Text = ParseTime.Stringify((_mediaPlayer.Length / 1000) * _mediaPlayer.Position);
+            float time = (_mediaPlayer.Length / 1000) * _mediaPlayer.Position;
+
+            textBox_from.Text = ParseTime.Stringify(time);
+            DisplayInfo($"Take start position: {ParseTime.Stringify(time, false)}");
             UpdateTextTime();
         }
 
         private void btn_TakePositionEnd_Click(object sender, EventArgs e)
         {
-            textBox_to.Text = ParseTime.Stringify((_mediaPlayer.Length / 1000) * _mediaPlayer.Position);
+            float time = (_mediaPlayer.Length / 1000) * _mediaPlayer.Position;
+
+            textBox_to.Text = ParseTime.Stringify(time);
+            DisplayInfo($"Take end position: {ParseTime.Stringify(time, false)}");
             UpdateTextTime();
         }
 

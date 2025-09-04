@@ -274,6 +274,7 @@
             lblInfo.Name = "lblInfo";
             lblInfo.Size = new Size(250, 15);
             lblInfo.TabIndex = 18;
+            lblInfo.Text = "Ready!";
             lblInfo.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // menuStrip1
@@ -295,19 +296,19 @@
             // toolStripMenuItem_Open
             // 
             toolStripMenuItem_Open.Name = "toolStripMenuItem_Open";
-            toolStripMenuItem_Open.Size = new Size(180, 22);
+            toolStripMenuItem_Open.Size = new Size(144, 22);
             toolStripMenuItem_Open.Text = "&Open a video";
             toolStripMenuItem_Open.Click += toolStripMenuItem_Open_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(177, 6);
+            toolStripSeparator1.Size = new Size(141, 6);
             // 
             // toolStripMenuItem_Quit
             // 
             toolStripMenuItem_Quit.Name = "toolStripMenuItem_Quit";
-            toolStripMenuItem_Quit.Size = new Size(180, 22);
+            toolStripMenuItem_Quit.Size = new Size(144, 22);
             toolStripMenuItem_Quit.Text = "&Quit";
             toolStripMenuItem_Quit.Click += toolStripMenuItem_Quit_Click;
             // 
@@ -322,7 +323,7 @@
             // 
             presetToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ultrafastToolStripMenuItem, superfastToolStripMenuItem, veryFastToolStripMenuItem, fasterToolStripMenuItem, fastToolStripMenuItem, mediumToolStripMenuItem, slowToolStripMenuItem, slowerToolStripMenuItem });
             presetToolStripMenuItem.Name = "presetToolStripMenuItem";
-            presetToolStripMenuItem.Size = new Size(180, 22);
+            presetToolStripMenuItem.Size = new Size(106, 22);
             presetToolStripMenuItem.Text = "&Preset";
             // 
             // ultrafastToolStripMenuItem
