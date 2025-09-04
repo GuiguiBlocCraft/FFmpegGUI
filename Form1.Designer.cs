@@ -53,7 +53,6 @@
             btnRemoveList = new Button();
             lblInfo = new Label();
             menuStrip1 = new MenuStrip();
-            toolStripMenuItem1 = new ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             presetToolStripMenuItem = new ToolStripMenuItem();
             ultrafastToolStripMenuItem = new ToolStripMenuItem();
@@ -64,6 +63,7 @@
             mediumToolStripMenuItem = new ToolStripMenuItem();
             slowToolStripMenuItem = new ToolStripMenuItem();
             slowerToolStripMenuItem = new ToolStripMenuItem();
+            toolStripMenuItem1 = new ToolStripMenuItem();
             panelPlayerVideo = new Panel();
             panelPlayerButtons = new Panel();
             btn_TakePositionEnd = new Button();
@@ -311,11 +311,6 @@
             menuStrip1.TabIndex = 19;
             menuStrip1.Text = "menuStrip";
             // 
-            // toolStripMenuItem1
-            // 
-            toolStripMenuItem1.Name = "toolStripMenuItem1";
-            toolStripMenuItem1.Size = new Size(12, 20);
-            // 
             // optionsToolStripMenuItem
             // 
             optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem });
@@ -327,64 +322,69 @@
             // 
             presetToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ultrafastToolStripMenuItem, superfastToolStripMenuItem, veryFastToolStripMenuItem, fasterToolStripMenuItem, fastToolStripMenuItem, mediumToolStripMenuItem, slowToolStripMenuItem, slowerToolStripMenuItem });
             presetToolStripMenuItem.Name = "presetToolStripMenuItem";
-            presetToolStripMenuItem.Size = new Size(180, 22);
+            presetToolStripMenuItem.Size = new Size(106, 22);
             presetToolStripMenuItem.Text = "&Preset";
             // 
             // ultrafastToolStripMenuItem
             // 
             ultrafastToolStripMenuItem.Name = "ultrafastToolStripMenuItem";
-            ultrafastToolStripMenuItem.Size = new Size(180, 22);
+            ultrafastToolStripMenuItem.Size = new Size(126, 22);
             ultrafastToolStripMenuItem.Text = "&Ultra fast";
             ultrafastToolStripMenuItem.Click += ultrafastToolStripMenuItem_Click;
             // 
             // superfastToolStripMenuItem
             // 
             superfastToolStripMenuItem.Name = "superfastToolStripMenuItem";
-            superfastToolStripMenuItem.Size = new Size(180, 22);
+            superfastToolStripMenuItem.Size = new Size(126, 22);
             superfastToolStripMenuItem.Text = "&Super fast";
             superfastToolStripMenuItem.Click += superfastToolStripMenuItem_Click;
             // 
             // veryFastToolStripMenuItem
             // 
             veryFastToolStripMenuItem.Name = "veryFastToolStripMenuItem";
-            veryFastToolStripMenuItem.Size = new Size(180, 22);
+            veryFastToolStripMenuItem.Size = new Size(126, 22);
             veryFastToolStripMenuItem.Text = "&Very fast";
             veryFastToolStripMenuItem.Click += veryFastToolStripMenuItem_Click;
             // 
             // fasterToolStripMenuItem
             // 
             fasterToolStripMenuItem.Name = "fasterToolStripMenuItem";
-            fasterToolStripMenuItem.Size = new Size(180, 22);
+            fasterToolStripMenuItem.Size = new Size(126, 22);
             fasterToolStripMenuItem.Text = "F&aster";
             fasterToolStripMenuItem.Click += fasterToolStripMenuItem_Click;
             // 
             // fastToolStripMenuItem
             // 
             fastToolStripMenuItem.Name = "fastToolStripMenuItem";
-            fastToolStripMenuItem.Size = new Size(180, 22);
+            fastToolStripMenuItem.Size = new Size(126, 22);
             fastToolStripMenuItem.Text = "&Fast";
             fastToolStripMenuItem.Click += fastToolStripMenuItem_Click;
             // 
             // mediumToolStripMenuItem
             // 
             mediumToolStripMenuItem.Name = "mediumToolStripMenuItem";
-            mediumToolStripMenuItem.Size = new Size(180, 22);
+            mediumToolStripMenuItem.Size = new Size(126, 22);
             mediumToolStripMenuItem.Text = "&Medium";
             mediumToolStripMenuItem.Click += mediumToolStripMenuItem_Click;
             // 
             // slowToolStripMenuItem
             // 
             slowToolStripMenuItem.Name = "slowToolStripMenuItem";
-            slowToolStripMenuItem.Size = new Size(180, 22);
+            slowToolStripMenuItem.Size = new Size(126, 22);
             slowToolStripMenuItem.Text = "&Slow";
             slowToolStripMenuItem.Click += slowToolStripMenuItem_Click;
             // 
             // slowerToolStripMenuItem
             // 
             slowerToolStripMenuItem.Name = "slowerToolStripMenuItem";
-            slowerToolStripMenuItem.Size = new Size(180, 22);
+            slowerToolStripMenuItem.Size = new Size(126, 22);
             slowerToolStripMenuItem.Text = "S&lower";
             slowerToolStripMenuItem.Click += slowerToolStripMenuItem_Click;
+            // 
+            // toolStripMenuItem1
+            // 
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new Size(12, 20);
             // 
             // panelPlayerVideo
             // 
