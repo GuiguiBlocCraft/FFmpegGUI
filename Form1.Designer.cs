@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            lblFile = new Label();
-            textBox_file = new TextBox();
-            btn_openFile = new Button();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
@@ -53,6 +50,10 @@
             btnRemoveList = new Button();
             lblInfo = new Label();
             menuStrip1 = new MenuStrip();
+            fileToolStripMenuItem = new ToolStripMenuItem();
+            toolStripMenuItem_Open = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
+            toolStripMenuItem_Quit = new ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             presetToolStripMenuItem = new ToolStripMenuItem();
             ultrafastToolStripMenuItem = new ToolStripMenuItem();
@@ -71,43 +72,16 @@
             trackBar_Player = new TrackBar();
             label_Position = new Label();
             btn_VideoPlay = new Button();
+            saveFilesDialog = new FolderBrowserDialog();
             menuStrip1.SuspendLayout();
             panelPlayerButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).BeginInit();
             SuspendLayout();
             // 
-            // lblFile
-            // 
-            lblFile.AutoSize = true;
-            lblFile.Location = new Point(12, 81);
-            lblFile.Name = "lblFile";
-            lblFile.Size = new Size(31, 15);
-            lblFile.TabIndex = 0;
-            lblFile.Text = "File :";
-            // 
-            // textBox_file
-            // 
-            textBox_file.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBox_file.Location = new Point(49, 78);
-            textBox_file.Name = "textBox_file";
-            textBox_file.Size = new Size(701, 23);
-            textBox_file.TabIndex = 1;
-            // 
-            // btn_openFile
-            // 
-            btn_openFile.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btn_openFile.Location = new Point(756, 78);
-            btn_openFile.Name = "btn_openFile";
-            btn_openFile.Size = new Size(32, 23);
-            btn_openFile.TabIndex = 2;
-            btn_openFile.Text = "...";
-            btn_openFile.UseVisualStyleBackColor = true;
-            btn_openFile.Click += btn_openFile_Click;
-            // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(8, 110);
+            label1.Location = new Point(8, 91);
             label1.Name = "label1";
             label1.Size = new Size(60, 15);
             label1.TabIndex = 3;
@@ -116,7 +90,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(176, 110);
+            label2.Location = new Point(176, 91);
             label2.Name = "label2";
             label2.Size = new Size(18, 15);
             label2.TabIndex = 4;
@@ -125,7 +99,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(176, 110);
+            label3.Location = new Point(176, 91);
             label3.Name = "label3";
             label3.Size = new Size(91, 15);
             label3.TabIndex = 5;
@@ -135,7 +109,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(367, 111);
+            label4.Location = new Point(367, 92);
             label4.Name = "label4";
             label4.Size = new Size(50, 15);
             label4.TabIndex = 6;
@@ -144,7 +118,7 @@
             // 
             // textBox_from
             // 
-            textBox_from.Location = new Point(74, 107);
+            textBox_from.Location = new Point(74, 88);
             textBox_from.Name = "textBox_from";
             textBox_from.Size = new Size(96, 23);
             textBox_from.TabIndex = 7;
@@ -153,7 +127,7 @@
             // 
             // textBox_to
             // 
-            textBox_to.Location = new Point(197, 107);
+            textBox_to.Location = new Point(197, 88);
             textBox_to.Name = "textBox_to";
             textBox_to.Size = new Size(96, 23);
             textBox_to.TabIndex = 8;
@@ -162,7 +136,7 @@
             // 
             // textBox_duration
             // 
-            textBox_duration.Location = new Point(268, 107);
+            textBox_duration.Location = new Point(268, 88);
             textBox_duration.Name = "textBox_duration";
             textBox_duration.Size = new Size(96, 23);
             textBox_duration.TabIndex = 9;
@@ -174,7 +148,7 @@
             // btn_Start
             // 
             btn_Start.Anchor = AnchorStyles.Bottom;
-            btn_Start.Location = new Point(326, 682);
+            btn_Start.Location = new Point(326, 664);
             btn_Start.Name = "btn_Start";
             btn_Start.Size = new Size(148, 33);
             btn_Start.TabIndex = 17;
@@ -186,7 +160,7 @@
             // 
             checkBox_useGC.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBox_useGC.AutoSize = true;
-            checkBox_useGC.Location = new Point(12, 696);
+            checkBox_useGC.Location = new Point(12, 670);
             checkBox_useGC.Name = "checkBox_useGC";
             checkBox_useGC.Size = new Size(158, 19);
             checkBox_useGC.TabIndex = 11;
@@ -197,7 +171,7 @@
             // 
             checkBox_durationMode.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBox_durationMode.AutoSize = true;
-            checkBox_durationMode.Location = new Point(12, 671);
+            checkBox_durationMode.Location = new Point(12, 645);
             checkBox_durationMode.Name = "checkBox_durationMode";
             checkBox_durationMode.Size = new Size(106, 19);
             checkBox_durationMode.TabIndex = 10;
@@ -245,7 +219,7 @@
             // lblPagination
             // 
             lblPagination.AutoSize = true;
-            lblPagination.Location = new Point(8, 142);
+            lblPagination.Location = new Point(8, 123);
             lblPagination.Name = "lblPagination";
             lblPagination.Size = new Size(56, 15);
             lblPagination.TabIndex = 9;
@@ -253,7 +227,7 @@
             // 
             // btnPagePrev
             // 
-            btnPagePrev.Location = new Point(93, 138);
+            btnPagePrev.Location = new Point(93, 119);
             btnPagePrev.Name = "btnPagePrev";
             btnPagePrev.Size = new Size(75, 23);
             btnPagePrev.TabIndex = 10;
@@ -263,7 +237,7 @@
             // 
             // btnPageNext
             // 
-            btnPageNext.Location = new Point(174, 138);
+            btnPageNext.Location = new Point(174, 119);
             btnPageNext.Name = "btnPageNext";
             btnPageNext.Size = new Size(75, 23);
             btnPageNext.TabIndex = 11;
@@ -273,7 +247,7 @@
             // 
             // btnAddList
             // 
-            btnAddList.Location = new Point(255, 138);
+            btnAddList.Location = new Point(255, 119);
             btnAddList.Name = "btnAddList";
             btnAddList.Size = new Size(75, 23);
             btnAddList.TabIndex = 12;
@@ -283,7 +257,7 @@
             // 
             // btnRemoveList
             // 
-            btnRemoveList.Location = new Point(336, 138);
+            btnRemoveList.Location = new Point(336, 119);
             btnRemoveList.Name = "btnRemoveList";
             btnRemoveList.Size = new Size(75, 23);
             btnRemoveList.TabIndex = 13;
@@ -295,34 +269,60 @@
             // 
             lblInfo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblInfo.AutoSize = true;
-            lblInfo.Location = new Point(275, 663);
+            lblInfo.Location = new Point(8, 705);
             lblInfo.MinimumSize = new Size(250, 0);
             lblInfo.Name = "lblInfo";
             lblInfo.Size = new Size(250, 15);
             lblInfo.TabIndex = 18;
-            lblInfo.TextAlign = ContentAlignment.TopCenter;
+            lblInfo.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { optionsToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, optionsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
             menuStrip1.TabIndex = 19;
             menuStrip1.Text = "menuStrip";
             // 
+            // fileToolStripMenuItem
+            // 
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItem_Open, toolStripSeparator1, toolStripMenuItem_Quit });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new Size(37, 20);
+            fileToolStripMenuItem.Text = "&File";
+            // 
+            // toolStripMenuItem_Open
+            // 
+            toolStripMenuItem_Open.Name = "toolStripMenuItem_Open";
+            toolStripMenuItem_Open.Size = new Size(180, 22);
+            toolStripMenuItem_Open.Text = "&Open a video";
+            toolStripMenuItem_Open.Click += toolStripMenuItem_Open_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(177, 6);
+            // 
+            // toolStripMenuItem_Quit
+            // 
+            toolStripMenuItem_Quit.Name = "toolStripMenuItem_Quit";
+            toolStripMenuItem_Quit.Size = new Size(180, 22);
+            toolStripMenuItem_Quit.Text = "&Quit";
+            toolStripMenuItem_Quit.Click += toolStripMenuItem_Quit_Click;
+            // 
             // optionsToolStripMenuItem
             // 
             optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem });
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            optionsToolStripMenuItem.Size = new Size(61, 20);
-            optionsToolStripMenuItem.Text = "&Options";
+            optionsToolStripMenuItem.Size = new Size(56, 20);
+            optionsToolStripMenuItem.Text = "&Option";
             // 
             // presetToolStripMenuItem
             // 
             presetToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ultrafastToolStripMenuItem, superfastToolStripMenuItem, veryFastToolStripMenuItem, fasterToolStripMenuItem, fastToolStripMenuItem, mediumToolStripMenuItem, slowToolStripMenuItem, slowerToolStripMenuItem });
             presetToolStripMenuItem.Name = "presetToolStripMenuItem";
-            presetToolStripMenuItem.Size = new Size(106, 22);
+            presetToolStripMenuItem.Size = new Size(180, 22);
             presetToolStripMenuItem.Text = "&Preset";
             // 
             // ultrafastToolStripMenuItem
@@ -389,7 +389,8 @@
             // panelPlayerVideo
             // 
             panelPlayerVideo.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panelPlayerVideo.Location = new Point(12, 177);
+            panelPlayerVideo.BackColor = Color.Black;
+            panelPlayerVideo.Location = new Point(12, 158);
             panelPlayerVideo.Name = "panelPlayerVideo";
             panelPlayerVideo.Size = new Size(776, 400);
             panelPlayerVideo.TabIndex = 20;
@@ -402,7 +403,7 @@
             panelPlayerButtons.Controls.Add(trackBar_Player);
             panelPlayerButtons.Controls.Add(label_Position);
             panelPlayerButtons.Controls.Add(btn_VideoPlay);
-            panelPlayerButtons.Location = new Point(12, 581);
+            panelPlayerButtons.Location = new Point(12, 559);
             panelPlayerButtons.Name = "panelPlayerButtons";
             panelPlayerButtons.Size = new Size(776, 79);
             panelPlayerButtons.TabIndex = 21;
@@ -486,9 +487,6 @@
             Controls.Add(textBox_from);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(btn_openFile);
-            Controls.Add(textBox_file);
-            Controls.Add(lblFile);
             Controls.Add(menuStrip1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
@@ -509,10 +507,6 @@
         }
 
         #endregion
-
-        private Label lblFile;
-        private TextBox textBox_file;
-        private Button btn_openFile;
         private Label label1;
         private Label label2;
         private Label label3;
@@ -552,5 +546,10 @@
         private TrackBar trackBar_Player;
         private Button btn_TakePositionStart;
         private Button btn_TakePositionEnd;
+        private FolderBrowserDialog saveFilesDialog;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem toolStripMenuItem_Open;
+        private ToolStripMenuItem toolStripMenuItem_Quit;
+        private ToolStripSeparator toolStripSeparator1;
     }
 }

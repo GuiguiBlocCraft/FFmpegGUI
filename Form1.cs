@@ -69,33 +69,39 @@ namespace ffmpegGui_SimpleCut
             // Initialize in argument
             if(!string.IsNullOrEmpty(FileName))
             {
-                textBox_file.Text = FileName;
                 LoadVideo();
             }
 
             FormLoading.Close();
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(render?.StateRender == StateRender.Running)
+            {
+                e.Cancel = true;
+                MessageBox.Show("A render is running. You must cancel this before to quit.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                _mediaPlayer?.Dispose();
+                _libVLC?.Dispose();
+            }
+        }
+
         private void LoadVideo()
         {
             if(_libVLC != null)
             {
-                using var media = new Media(_libVLC, textBox_file.Text);
+                using var media = new Media(_libVLC, FileName);
                 _mediaPlayer.Play(media);
                 _mediaPlayer.SetPause(true);
                 _mediaPlayer.Position = 0;
 
                 _mediaPlayer_PositionChanged(true);
                 SetStatePlayer(true);
+                lblInfo.Text = $"File loaded: {FileName}";
             }
-        }
-
-        private void btn_openFile_Click(object sender, EventArgs e)
-        {
-            openFileDialog.FileName = "";
-            openFileDialog.Filter = "All Videos Files |*.wmv; *.avi; *.flv; *.mkv; *.mov; *.mp4; *.mpeg; *.webm";
-            openFileDialog.RestoreDirectory = true;
-            openFileDialog.ShowDialog();
         }
 
         private async void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -103,8 +109,9 @@ namespace ffmpegGui_SimpleCut
             float timeFrom = ParseTime.Parse(textBox_from.Text);
             float duration = await MediaInfo.GetDuration(openFileDialog.FileName);
 
-            textBox_file.Text = openFileDialog.FileName;
             textBox_to.Text = ParseTime.Stringify(duration);
+
+            SetFileName(openFileDialog.FileName);
 
             ListSplits.Update(timeFrom, duration);
             UpdateComponents();
@@ -123,13 +130,13 @@ namespace ffmpegGui_SimpleCut
 
             render = new Render();
 
-            if(String.IsNullOrEmpty(textBox_file.Text))
+            if(String.IsNullOrEmpty(FileName))
             {
                 MessageBox.Show("Select a video file to start", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if(!File.Exists(textBox_file.Text))
+            if(!File.Exists(FileName))
             {
                 MessageBox.Show("File doesn't exist, please select a correct file video", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -170,8 +177,25 @@ namespace ffmpegGui_SimpleCut
 
             bool getArgsOnly = ModifierKeys == Keys.Shift;
 
-            ListSplits.InitializeNames(textBox_file.Text);
-            render.SetData(textBox_file.Text, ListSplits.ToList());
+            if(ModifierKeys == Keys.Control)
+            {
+                saveFilesDialog.InitialDirectory = FileName;
+                DialogResult result = saveFilesDialog.ShowDialog();
+
+                if(result == DialogResult.Cancel)
+                    return;
+
+                Debug.WriteLine(saveFilesDialog.SelectedPath);
+                Debug.WriteLine(FileName);
+
+                string fileName = Path.GetFileName(FileName);
+                FileName = Path.Combine(saveFilesDialog.SelectedPath, FileName);
+
+                return;
+            }
+
+            ListSplits.InitializeNames(FileName);
+            render.SetData(FileName, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
             render.Preset = Preset;
             TotalDuration = (int)render.GetTotalDuration();
@@ -266,7 +290,7 @@ namespace ffmpegGui_SimpleCut
             float timeFrom = ParseTime.Parse(textBox_from.Text);
             float duration = await MediaInfo.GetDuration(files[0]);
 
-            textBox_file.Text = files[0];
+            SetFileName(files[0]);
 
             ListSplits.Update(timeFrom, duration);
             UpdateComponents();
@@ -383,7 +407,7 @@ namespace ffmpegGui_SimpleCut
 
         private void UpdateTextRender()
         {
-            if(render?.Progress != null)
+            if(render?.Progress != null && render.StateRender == StateRender.Running)
             {
                 var time = render.Progress.ProcessedDuration;
                 string strTime = time.Hours + "h"
@@ -432,7 +456,8 @@ namespace ffmpegGui_SimpleCut
             Text += $" ({version.Major}.{version.Minor}.{version.Build})";
         }
 
-        // Menu items - Preset's option
+        #region Menu items - Preset's option
+
         private void ultrafastToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UpdatePresetOptions(Preset.UltraFast);
@@ -473,7 +498,23 @@ namespace ffmpegGui_SimpleCut
             UpdatePresetOptions(Preset.Slower);
         }
 
-        // Video player - Buttons
+        private void toolStripMenuItem_Open_Click(object sender, EventArgs e)
+        {
+            openFileDialog.FileName = "";
+            openFileDialog.Filter = "All Videos Files |*.wmv; *.avi; *.flv; *.mkv; *.mov; *.mp4; *.mpeg; *.webm";
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.ShowDialog();
+        }
+
+        private void toolStripMenuItem_Quit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        #endregion
+
+        #region Video player - Buttons
+
         private void btn_VideoPlay_Click(object sender, EventArgs e)
         {
             if(_mediaPlayer.IsPlaying)
@@ -509,26 +550,14 @@ namespace ffmpegGui_SimpleCut
             _mediaPlayer_PositionChanged(false);
         }
 
+        #endregion
+
         private void SetStatePlayer(bool state)
         {
             trackBar_Player.Enabled = state;
             btn_VideoPlay.Enabled = state;
             btn_TakePositionStart.Enabled = state;
             btn_TakePositionEnd.Enabled = state;
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if(render?.StateRender == StateRender.Running)
-            {
-                e.Cancel = true;
-                MessageBox.Show("A render is running. You must cancel this before to quit.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                _mediaPlayer?.Dispose();
-                _libVLC?.Dispose();
-            }
         }
     }
 }
