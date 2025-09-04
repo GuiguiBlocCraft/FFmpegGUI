@@ -220,7 +220,8 @@
             // 
             label_Author.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label_Author.AutoSize = true;
-            label_Author.Font = new Font("Segoe UI", 8.25F);
+            label_Author.Cursor = Cursors.Hand;
+            label_Author.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label_Author.Location = new Point(704, 705);
             label_Author.Name = "label_Author";
             label_Author.Size = new Size(88, 13);
@@ -303,7 +304,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, optionsToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { optionsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -409,22 +410,22 @@
             // btn_TakePositionEnd
             // 
             btn_TakePositionEnd.Anchor = AnchorStyles.Bottom;
-            btn_TakePositionEnd.Location = new Point(430, 52);
+            btn_TakePositionEnd.Image = Properties.Resources.CutEnd;
+            btn_TakePositionEnd.Location = new Point(410, 45);
             btn_TakePositionEnd.Name = "btn_TakePositionEnd";
-            btn_TakePositionEnd.Size = new Size(75, 23);
+            btn_TakePositionEnd.Size = new Size(32, 32);
             btn_TakePositionEnd.TabIndex = 2;
-            btn_TakePositionEnd.Text = "Take end";
             btn_TakePositionEnd.UseVisualStyleBackColor = true;
             btn_TakePositionEnd.Click += btn_TakePositionEnd_Click;
             // 
             // btn_TakePositionStart
             // 
             btn_TakePositionStart.Anchor = AnchorStyles.Bottom;
-            btn_TakePositionStart.Location = new Point(351, 52);
+            btn_TakePositionStart.Image = Properties.Resources.CutStart;
+            btn_TakePositionStart.Location = new Point(372, 45);
             btn_TakePositionStart.Name = "btn_TakePositionStart";
-            btn_TakePositionStart.Size = new Size(75, 23);
+            btn_TakePositionStart.Size = new Size(32, 32);
             btn_TakePositionStart.TabIndex = 1;
-            btn_TakePositionStart.Text = "Take start";
             btn_TakePositionStart.UseVisualStyleBackColor = true;
             btn_TakePositionStart.Click += btn_TakePositionStart_Click;
             // 
@@ -450,11 +451,11 @@
             // btn_VideoPlay
             // 
             btn_VideoPlay.Anchor = AnchorStyles.Bottom;
-            btn_VideoPlay.Location = new Point(272, 52);
+            btn_VideoPlay.Image = Properties.Resources.Play;
+            btn_VideoPlay.Location = new Point(334, 45);
             btn_VideoPlay.Name = "btn_VideoPlay";
-            btn_VideoPlay.Size = new Size(75, 23);
+            btn_VideoPlay.Size = new Size(32, 32);
             btn_VideoPlay.TabIndex = 0;
-            btn_VideoPlay.Text = "Play";
             btn_VideoPlay.UseVisualStyleBackColor = true;
             btn_VideoPlay.Click += btn_VideoPlay_Click;
             // 

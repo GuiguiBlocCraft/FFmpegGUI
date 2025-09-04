@@ -37,7 +37,7 @@ namespace ffmpegGui_SimpleCut
         private void Form1_Load(object sender, EventArgs e)
         {
             // Display loading
-            FormLoading.TopMost = true;
+            FormLoading.Text = Text;
             FormLoading.Show();
 
             // Initialize somes composants
@@ -187,8 +187,8 @@ namespace ffmpegGui_SimpleCut
             string oldText = btn_Start.Text;
 
             Timer = new System.Timers.Timer();
-            Timer.Interval = 50;
-            Timer.Elapsed += (_, __) => _ui.Post(_ => UpdateButtonStart(), null);
+            Timer.Interval = 100;
+            Timer.Elapsed += (_, __) => _ui.Post(_ => UpdateTextRender(), null);
             Timer.Enabled = true;
 
             btn_Start.Text = "Cancel render";
@@ -350,19 +350,19 @@ namespace ffmpegGui_SimpleCut
 
         private void _mediaPlayer_Playing()
         {
-            btn_VideoPlay.Text = "Pause";
+            btn_VideoPlay.Image = Properties.Resources.Pause;
             PlayerStopped = false;
         }
 
         private void _mediaPlayer_Paused()
         {
-            btn_VideoPlay.Text = "Play";
+            btn_VideoPlay.Image = Properties.Resources.Play;
             PlayerStopped = false;
         }
 
         private void _mediaPlayer_Stopped()
         {
-            btn_VideoPlay.Text = "Play";
+            btn_VideoPlay.Image = Properties.Resources.Play;
             PlayerStopped = true;
         }
 
@@ -381,7 +381,7 @@ namespace ffmpegGui_SimpleCut
             trackBar_Player.Maximum = (int)_mediaPlayer.Length / 1000;
         }
 
-        private void UpdateButtonStart()
+        private void UpdateTextRender()
         {
             if(render?.Progress != null)
             {

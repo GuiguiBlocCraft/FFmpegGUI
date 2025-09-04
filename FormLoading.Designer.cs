@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLoading));
             label_Loading = new Label();
             SuspendLayout();
             // 
@@ -49,14 +50,15 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(300, 150);
             Controls.Add(label_Loading);
+            Cursor = Cursors.WaitCursor;
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "FormLoading";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "FormLoading";
-            TopMost = true;
+            Text = "Loading";
             UseWaitCursor = true;
             ResumeLayout(false);
             PerformLayout();
