@@ -3,6 +3,7 @@ namespace ffmpegGui_SimpleCut;
 public class ListSplits
 {
     private readonly List<Split> Splits = new List<Split>();
+    private string DirectoryOutput = string.Empty;
     public int Page { get; set; } = 1;
     public int MaxPage { get { return Splits.Count; }}
 
@@ -61,7 +62,19 @@ public class ListSplits
 
         for(int n = 0; n < Splits.Count; n++)
         {
-            Splits[n].OutputFile = fileNames[n];
+            Splits[n].OutputFile = DirectoryOutput == string.Empty
+                ? fileNames[n]
+                : Path.Combine(DirectoryOutput, Path.GetFileName(fileNames[n]));
         }
+    }
+
+    public void SetOutputDirectory(string directory)
+    {
+        DirectoryOutput = directory;
+    }
+
+    public bool CheckOutputDirectory()
+    {
+        return DirectoryOutput == string.Empty || Directory.Exists(DirectoryOutput);
     }
 }

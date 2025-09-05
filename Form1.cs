@@ -101,6 +101,9 @@ namespace ffmpegGui_SimpleCut
                 _mediaPlayer_PositionChanged(true);
                 SetStatePlayer(true);
                 DisplayInfo($"File loaded: {FileName}");
+
+                ListSplits.SetOutputDirectory(string.Empty);
+                toolStripMenuItem_Render.Enabled = true;
             }
         }
 
@@ -147,6 +150,12 @@ namespace ffmpegGui_SimpleCut
                 return;
             }
 
+            if(!ListSplits.CheckOutputDirectory())
+            {
+                MessageBox.Show("Directory output doesn't exist", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if(checkBox_durationMode.Checked)
             {
                 float start;
@@ -181,23 +190,6 @@ namespace ffmpegGui_SimpleCut
             }
 
             bool getArgsOnly = ModifierKeys == Keys.Shift;
-
-            if(ModifierKeys == Keys.Control)
-            {
-                saveFilesDialog.InitialDirectory = FileName;
-                DialogResult result = saveFilesDialog.ShowDialog();
-
-                if(result == DialogResult.Cancel)
-                    return;
-
-                Debug.WriteLine(saveFilesDialog.SelectedPath);
-                Debug.WriteLine(FileName);
-
-                string fileName = Path.GetFileName(FileName);
-                FileName = Path.Combine(saveFilesDialog.SelectedPath, FileName);
-
-                return;
-            }
 
             ListSplits.InitializeNames(FileName);
             render.SetData(FileName, ListSplits.ToList());
@@ -509,6 +501,19 @@ namespace ffmpegGui_SimpleCut
             openFileDialog.Filter = "All Videos Files |*.wmv; *.avi; *.flv; *.mkv; *.mov; *.mp4; *.mpeg; *.webm";
             openFileDialog.RestoreDirectory = true;
             openFileDialog.ShowDialog();
+        }
+
+        private void toolStripMenuItem_RenderAs_Click(object sender, EventArgs e)
+        {
+            saveFilesDialog.InitialDirectory = FileName;
+            DialogResult result = saveFilesDialog.ShowDialog();
+
+            if(result == DialogResult.Cancel)
+                return;
+
+            ListSplits.SetOutputDirectory(saveFilesDialog.SelectedPath);
+
+            DisplayInfo($"Folder output selected: {saveFilesDialog.SelectedPath}");
         }
 
         private void toolStripMenuItem_Quit_Click(object sender, EventArgs e)
