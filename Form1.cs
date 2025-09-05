@@ -392,7 +392,7 @@ namespace ffmpegGui_SimpleCut
             float length = _mediaPlayer.Length / 1000;
             float position = _mediaPlayer.Position * length;
 
-            label_Position.Text = $"Position: {ParseTime.Stringify(position, false)} / {ParseTime.Stringify(length, false)}";
+            label_Position.Text = $"{ParseTime.Stringify(position, false)} / {ParseTime.Stringify(length, false)}";
             if(updateTrackBar)
                 trackBar_Player.Value = (int)(_mediaPlayer.Position * trackBar_Player.Maximum);
         }

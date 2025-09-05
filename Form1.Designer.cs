@@ -451,13 +451,12 @@
             // 
             // label_Position
             // 
-            label_Position.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label_Position.AutoSize = true;
-            label_Position.Location = new Point(7, 55);
+            label_Position.Location = new Point(3, 45);
             label_Position.Name = "label_Position";
-            label_Position.Size = new Size(53, 15);
+            label_Position.Size = new Size(90, 15);
             label_Position.TabIndex = 4;
-            label_Position.Text = "Position:";
+            label_Position.Text = "0:00:00 / 0:00:00";
             // 
             // btn_VideoPlay
             // 
