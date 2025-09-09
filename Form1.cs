@@ -13,12 +13,12 @@ namespace ffmpegGui_SimpleCut
         private string FileName = "";
         private System.Timers.Timer Timer;
         private Render render;
-        private int TotalDuration = 0;
+        private float TotalDuration;
         private bool PlayerStopped = true;
         private Preset Preset;
 
         private LibVLC _libVLC;
-        private MediaPlayer _mediaPlayer;
+        private MediaPlayer MediaPlayer;
 
         private SynchronizationContext _ui;
 
@@ -53,18 +53,18 @@ namespace ffmpegGui_SimpleCut
 
             // Initialize LibVLC
             _libVLC = new LibVLC();
-            _mediaPlayer = new MediaPlayer(_libVLC)
+            MediaPlayer = new MediaPlayer(_libVLC)
             {
                 Hwnd = panelPlayerVideo.Handle
             };
 
-            _mediaPlayer.Playing += (_, __) => _ui.Post(_ => _mediaPlayer_Playing(), null);
-            _mediaPlayer.Paused += (_, __) => _ui.Post(_ => _mediaPlayer_Paused(), null);
-            _mediaPlayer.Stopped += (_, __) => _ui.Post(_ => _mediaPlayer_Stopped(), null);
-            _mediaPlayer.PositionChanged += (_, __) => _ui.Post(_ => _mediaPlayer_PositionChanged(true), null);
-            _mediaPlayer.LengthChanged += (_, __) => _ui.Post(_ => _mediaPlayer_LengthChanged(), null);
+            MediaPlayer.Playing += (_, __) => _ui.Post(_ => MediaPlayer_Playing(), null);
+            MediaPlayer.Paused += (_, __) => _ui.Post(_ => MediaPlayer_Paused(), null);
+            MediaPlayer.Stopped += (_, __) => _ui.Post(_ => MediaPlayer_Stopped(), null);
+            MediaPlayer.PositionChanged += (_, __) => _ui.Post(_ => MediaPlayer_PositionChanged(true), null);
+            MediaPlayer.LengthChanged += (_, __) => _ui.Post(_ => MediaPlayer_LengthChanged(), null);
 
-            _mediaPlayer_PositionChanged(false);
+            MediaPlayer_PositionChanged(false);
 
             // Initialize in argument
             if(!string.IsNullOrEmpty(FileName))
@@ -84,7 +84,7 @@ namespace ffmpegGui_SimpleCut
             }
             else
             {
-                _mediaPlayer?.Dispose();
+                MediaPlayer?.Dispose();
                 _libVLC?.Dispose();
             }
         }
@@ -94,11 +94,11 @@ namespace ffmpegGui_SimpleCut
             if(_libVLC != null)
             {
                 using var media = new Media(_libVLC, FileName);
-                _mediaPlayer.Play(media);
-                _mediaPlayer.SetPause(true);
-                _mediaPlayer.Position = 0;
+                MediaPlayer.Play(media);
+                MediaPlayer.SetPause(true);
+                MediaPlayer.Position = 0;
 
-                _mediaPlayer_PositionChanged(true);
+                MediaPlayer_PositionChanged(true);
                 SetStatePlayer(true);
                 DisplayInfo($"File loaded: {FileName}");
 
@@ -117,8 +117,7 @@ namespace ffmpegGui_SimpleCut
             float timeFrom = ParseTime.Parse(textBox_from.Text);
             float duration = await MediaInfo.GetDuration(openFileDialog.FileName);
 
-            textBox_to.Text = ParseTime.Stringify(duration);
-
+            TotalDuration = duration;
             SetFileName(openFileDialog.FileName);
 
             ListSplits.Update(timeFrom, duration);
@@ -195,7 +194,7 @@ namespace ffmpegGui_SimpleCut
             render.SetData(FileName, ListSplits.ToList());
             render.UseGraphicCard = checkBox_useGC.Checked;
             render.Preset = Preset;
-            TotalDuration = (int)render.GetTotalDuration();
+            TotalDuration = render.GetTotalDuration();
             await render.DetectAndSetValue();
 
             if(getArgsOnly)
@@ -346,7 +345,7 @@ namespace ffmpegGui_SimpleCut
 
         private void btnAddList_Click(object sender, EventArgs e)
         {
-            ListSplits.Add(0, 0);
+            ListSplits.Add(0, TotalDuration);
             UpdateComponents();
         }
 
@@ -369,37 +368,37 @@ namespace ffmpegGui_SimpleCut
             textBox_duration.Text = split.Duration.ToString();
         }
 
-        private void _mediaPlayer_Playing()
+        private void MediaPlayer_Playing()
         {
             btn_VideoPlay.Image = Properties.Resources.Pause;
             PlayerStopped = false;
         }
 
-        private void _mediaPlayer_Paused()
+        private void MediaPlayer_Paused()
         {
             btn_VideoPlay.Image = Properties.Resources.Play;
             PlayerStopped = false;
         }
 
-        private void _mediaPlayer_Stopped()
+        private void MediaPlayer_Stopped()
         {
             btn_VideoPlay.Image = Properties.Resources.Play;
             PlayerStopped = true;
         }
 
-        private void _mediaPlayer_PositionChanged(bool updateTrackBar)
+        private void MediaPlayer_PositionChanged(bool updateTrackBar)
         {
-            float length = _mediaPlayer.Length / 1000;
-            float position = _mediaPlayer.Position * length;
+            float length = MediaPlayer.Length / 1000;
+            float position = MediaPlayer.Position * length;
 
             label_Position.Text = $"{ParseTime.Stringify(position, false)} / {ParseTime.Stringify(length, false)}";
             if(updateTrackBar)
-                trackBar_Player.Value = (int)(_mediaPlayer.Position * trackBar_Player.Maximum);
+                trackBar_Player.Value = (int)(MediaPlayer.Position * trackBar_Player.Maximum);
         }
 
-        private void _mediaPlayer_LengthChanged()
+        private void MediaPlayer_LengthChanged()
         {
-            trackBar_Player.Maximum = (int)_mediaPlayer.Length / 1000;
+            trackBar_Player.Maximum = (int)MediaPlayer.Length / 1000;
         }
 
         private void UpdateTextRender()
@@ -414,7 +413,7 @@ namespace ffmpegGui_SimpleCut
                 DisplayInfo($"{render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)");
 
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
-                TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, TotalDuration);
+                TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, (int)TotalDuration);
             }
         }
 
@@ -527,24 +526,24 @@ namespace ffmpegGui_SimpleCut
 
         private void btn_VideoPlay_Click(object sender, EventArgs e)
         {
-            if(_mediaPlayer.IsPlaying)
+            if(MediaPlayer.IsPlaying)
             {
-                _mediaPlayer.Pause();
+                MediaPlayer.Pause();
             }
             else if(PlayerStopped)
             {
-                _mediaPlayer.Position = 0;
-                _mediaPlayer.Play(_mediaPlayer.Media);
+                MediaPlayer.Position = 0;
+                MediaPlayer.Play(MediaPlayer.Media);
             }
             else
             {
-                _mediaPlayer.Play();
+                MediaPlayer.Play();
             }
         }
 
         private void btn_TakePositionStart_Click(object sender, EventArgs e)
         {
-            float time = (_mediaPlayer.Length / 1000) * _mediaPlayer.Position;
+            float time = (MediaPlayer.Length / 1000) * MediaPlayer.Position;
 
             textBox_from.Text = ParseTime.Stringify(time);
             DisplayInfo($"Take start position: {ParseTime.Stringify(time, false)}");
@@ -553,7 +552,7 @@ namespace ffmpegGui_SimpleCut
 
         private void btn_TakePositionEnd_Click(object sender, EventArgs e)
         {
-            float time = (_mediaPlayer.Length / 1000) * _mediaPlayer.Position;
+            float time = (MediaPlayer.Length / 1000) * MediaPlayer.Position;
 
             textBox_to.Text = ParseTime.Stringify(time);
             DisplayInfo($"Take end position: {ParseTime.Stringify(time, false)}");
@@ -562,8 +561,8 @@ namespace ffmpegGui_SimpleCut
 
         private void trackBar_Player_Scroll(object sender, EventArgs e)
         {
-            _mediaPlayer.Position = (float)trackBar_Player.Value / trackBar_Player.Maximum;
-            _mediaPlayer_PositionChanged(false);
+            MediaPlayer.Position = (float)trackBar_Player.Value / trackBar_Player.Maximum;
+            MediaPlayer_PositionChanged(false);
         }
 
         #endregion
