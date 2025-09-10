@@ -182,7 +182,7 @@
             // 
             // label_Title
             // 
-            label_Title.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label_Title.Anchor = AnchorStyles.Top;
             label_Title.AutoSize = true;
             label_Title.Font = new Font("Segoe UI", 24F);
             label_Title.Location = new Point(302, 29);
@@ -190,6 +190,7 @@
             label_Title.Size = new Size(197, 45);
             label_Title.TabIndex = 14;
             label_Title.Text = "FFmpeg GUI";
+            label_Title.TextAlign = ContentAlignment.TopCenter;
             // 
             // label_Author
             // 
