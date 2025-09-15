@@ -109,7 +109,7 @@ namespace ffmpegGui_SimpleCut
 
         private void DisplayInfo(string str)
         {
-            lblInfo.Text = str;
+            statusBar_Information.Text = str;
         }
 
         private async void OpenFileDialog_FileOk(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -216,6 +216,7 @@ namespace ffmpegGui_SimpleCut
             DisplayInfo("Rendering...");
 
             SetStatePlayer(false);
+            statusBar_ProgressBar.Visible = true;
 
             await render.Execute();
 
@@ -223,6 +224,7 @@ namespace ffmpegGui_SimpleCut
             btn_Start.Text = oldText;
 
             SetStatePlayer(true);
+            statusBar_ProgressBar.Visible = false;
 
             if(render.StateRender == StateRender.Cancelled)
             {
@@ -268,7 +270,7 @@ namespace ffmpegGui_SimpleCut
             }
         }
 
-        private void label_Author_Click(object sender, EventArgs e)
+        private void statusBar_Copyright_Click(object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://github.com/GuiguiBlocCraft") { UseShellExecute = true });
         }
@@ -411,6 +413,9 @@ namespace ffmpegGui_SimpleCut
                     + (time.Seconds < 10 ? "0" : "") + time.Seconds;
 
                 DisplayInfo($"{render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)");
+
+                statusBar_ProgressBar.Maximum = (int)TotalDuration;
+                statusBar_ProgressBar.Value = (int)time.TotalSeconds;
 
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
                 TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, (int)TotalDuration);

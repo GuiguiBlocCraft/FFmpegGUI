@@ -41,14 +41,11 @@
             checkBox_durationMode = new CheckBox();
             openFileDialog = new OpenFileDialog();
             label_Title = new Label();
-            label_Author = new Label();
-            label_createdBy = new Label();
             lblPagination = new Label();
             btnPagePrev = new Button();
             btnPageNext = new Button();
             btnAddList = new Button();
             btnRemoveList = new Button();
-            lblInfo = new Label();
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             toolStripMenuItem_Open = new ToolStripMenuItem();
@@ -70,13 +67,19 @@
             panelPlayerButtons = new Panel();
             btn_TakePositionEnd = new Button();
             btn_TakePositionStart = new Button();
-            trackBar_Player = new TrackBar();
+            trackBar_Player = new CustomSlider();
             label_Position = new Label();
             btn_VideoPlay = new Button();
             saveFilesDialog = new FolderBrowserDialog();
+            statusStrip = new StatusStrip();
+            statusBar_ProgressBar = new ToolStripProgressBar();
+            statusBar_Information = new ToolStripStatusLabel();
+            statusBar_Empty = new ToolStripStatusLabel();
+            statusBar_Copyright = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
             panelPlayerButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).BeginInit();
+            statusStrip.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -192,32 +195,6 @@
             label_Title.Text = "FFmpeg GUI";
             label_Title.TextAlign = ContentAlignment.TopCenter;
             // 
-            // label_Author
-            // 
-            label_Author.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            label_Author.AutoSize = true;
-            label_Author.Cursor = Cursors.Hand;
-            label_Author.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label_Author.Location = new Point(704, 705);
-            label_Author.Name = "label_Author";
-            label_Author.Size = new Size(88, 13);
-            label_Author.TabIndex = 15;
-            label_Author.Text = "GuiguiBlocCraft";
-            label_Author.TextAlign = ContentAlignment.TopRight;
-            label_Author.Click += label_Author_Click;
-            // 
-            // label_createdBy
-            // 
-            label_createdBy.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            label_createdBy.AutoSize = true;
-            label_createdBy.Font = new Font("Segoe UI", 8.25F);
-            label_createdBy.Location = new Point(646, 705);
-            label_createdBy.Name = "label_createdBy";
-            label_createdBy.Size = new Size(62, 13);
-            label_createdBy.TabIndex = 16;
-            label_createdBy.Text = "Created by";
-            label_createdBy.TextAlign = ContentAlignment.TopRight;
-            // 
             // lblPagination
             // 
             lblPagination.AutoSize = true;
@@ -266,18 +243,6 @@
             btnRemoveList.Text = "Remove";
             btnRemoveList.UseVisualStyleBackColor = true;
             btnRemoveList.Click += btnRemoveList_Click;
-            // 
-            // lblInfo
-            // 
-            lblInfo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblInfo.AutoSize = true;
-            lblInfo.Location = new Point(8, 705);
-            lblInfo.MinimumSize = new Size(250, 0);
-            lblInfo.Name = "lblInfo";
-            lblInfo.Size = new Size(250, 15);
-            lblInfo.TabIndex = 18;
-            lblInfo.Text = "Ready!";
-            lblInfo.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // menuStrip1
             // 
@@ -470,22 +435,56 @@
             btn_VideoPlay.UseVisualStyleBackColor = true;
             btn_VideoPlay.Click += btn_VideoPlay_Click;
             // 
+            // statusStrip
+            // 
+            statusStrip.Items.AddRange(new ToolStripItem[] { statusBar_ProgressBar, statusBar_Information, statusBar_Empty, statusBar_Copyright });
+            statusStrip.Location = new Point(0, 705);
+            statusStrip.Name = "statusStrip";
+            statusStrip.Size = new Size(800, 22);
+            statusStrip.TabIndex = 22;
+            statusStrip.Text = "statusStrip";
+            // 
+            // statusBar_ProgressBar
+            // 
+            statusBar_ProgressBar.Name = "statusBar_ProgressBar";
+            statusBar_ProgressBar.Size = new Size(100, 16);
+            statusBar_ProgressBar.Visible = false;
+            // 
+            // statusBar_Information
+            // 
+            statusBar_Information.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            statusBar_Information.Name = "statusBar_Information";
+            statusBar_Information.Size = new Size(42, 17);
+            statusBar_Information.Text = "Ready!";
+            // 
+            // statusBar_Empty
+            // 
+            statusBar_Empty.Name = "statusBar_Empty";
+            statusBar_Empty.Size = new Size(459, 17);
+            statusBar_Empty.Spring = true;
+            // 
+            // statusBar_Copyright
+            // 
+            statusBar_Copyright.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            statusBar_Copyright.Name = "statusBar_Copyright";
+            statusBar_Copyright.Size = new Size(151, 17);
+            statusBar_Copyright.Text = "Created by GuiguiBlocCraft";
+            statusBar_Copyright.Click += statusBar_Copyright_Click;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 727);
+            Controls.Add(statusStrip);
             Controls.Add(panelPlayerButtons);
             Controls.Add(panelPlayerVideo);
-            Controls.Add(lblInfo);
             Controls.Add(btnRemoveList);
             Controls.Add(btnAddList);
             Controls.Add(btnPageNext);
             Controls.Add(btnPagePrev);
             Controls.Add(lblPagination);
-            Controls.Add(label_createdBy);
-            Controls.Add(label_Author);
             Controls.Add(label_Title);
             Controls.Add(label4);
             Controls.Add(checkBox_durationMode);
@@ -512,6 +511,8 @@
             panelPlayerButtons.ResumeLayout(false);
             panelPlayerButtons.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).EndInit();
+            statusStrip.ResumeLayout(false);
+            statusStrip.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -529,14 +530,11 @@
         private CheckBox checkBox_durationMode;
         private OpenFileDialog openFileDialog;
         private Label label_Title;
-        private Label label_Author;
-        private Label label_createdBy;
         private Label lblPagination;
         private Button btnPagePrev;
         private Button btnPageNext;
         private Button btnAddList;
         private Button btnRemoveList;
-        private Label lblInfo;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem optionsToolStripMenuItem;
@@ -562,5 +560,10 @@
         private ToolStripMenuItem toolStripMenuItem_Quit;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem toolStripMenuItem_Render;
+        private StatusStrip statusStrip;
+        private ToolStripStatusLabel statusBar_Information;
+        private ToolStripStatusLabel statusBar_Copyright;
+        private ToolStripStatusLabel statusBar_Empty;
+        private ToolStripProgressBar statusBar_ProgressBar;
     }
 }
