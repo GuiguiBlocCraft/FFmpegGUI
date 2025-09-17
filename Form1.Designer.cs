@@ -67,7 +67,7 @@
             panelPlayerButtons = new Panel();
             btn_TakePositionEnd = new Button();
             btn_TakePositionStart = new Button();
-            trackBar_Player = new CustomSlider();
+            trackBar_Player = new TrackBar();
             label_Position = new Label();
             btn_VideoPlay = new Button();
             saveFilesDialog = new FolderBrowserDialog();
