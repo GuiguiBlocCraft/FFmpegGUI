@@ -38,6 +38,43 @@ public class MediaInfo
         return 0f;
     }
 
+    public static async Task<List<Encoder>> GetEncodersList()
+    {
+        string result = await ExecuteAsync("-codecs");
+        List<Encoder> encoders = new List<Encoder>();
+
+        bool listed = false;
+
+        foreach(string line in result.Split(Environment.NewLine))
+        {
+            string lineTrimed = line.Trim();
+
+            if(listed)
+            {
+                string[] data = lineTrimed.Split(' ', 3, StringSplitOptions.RemoveEmptyEntries);
+
+                if(data.Length == 0)
+                    continue;
+
+                string[] supports = data[0].Select(c => c.ToString()).ToArray();
+
+                // Encode support + Video codec
+                if(supports.Length > 0 && supports[1] == "E" && supports[2] == "V" && supports[3] != "I")
+                    encoders.Add(new Encoder()
+                    {
+                        Value = data[1],
+                        Name = data[2]
+                    });
+            }
+            else if(lineTrimed == "-------")
+            {
+                listed = true;
+            }
+        }
+
+        return encoders;
+    }
+
     private static async Task<string> ExecuteAsync(string arguments)
     {
         var p = new Process()
@@ -52,7 +89,6 @@ public class MediaInfo
         };
 
         p.Start();
-        await p.WaitForExitAsync();
 
         return await p.StandardOutput.ReadToEndAsync();
     }

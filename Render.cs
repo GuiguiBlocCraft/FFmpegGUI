@@ -19,6 +19,7 @@ internal class Render
 
     public bool UseGraphicCard { get; set; } = false;
     public Graphic GraphicMethod { get; set; } = Graphic.Unknown;
+    public string Encoder { get; set; } = string.Empty;
     public Preset Preset { get; set; } = Preset.Medium;
     public StateRender StateRender { get; set; } = StateRender.Idle;
     public string LastErrorMessage { get; set; }
@@ -30,16 +31,16 @@ internal class Render
 
     public string GetArguments()
     {
-        string encoder = "";
+        string graphicEncoder = "";
         string preset = "";
 
         // Encoder used
         if(GraphicMethod == Graphic.NVidia)
-            encoder = "nvenc";
+            graphicEncoder = "nvenc";
         else if(GraphicMethod == Graphic.AMD)
-            encoder = "amf";
+            graphicEncoder = "amf";
         else if(GraphicMethod == Graphic.Intel)
-            encoder = "qsv";
+            graphicEncoder = "qsv";
 
         // Preset used
         if(Preset == Preset.UltraFast)
@@ -60,7 +61,7 @@ internal class Render
             preset = "slower";
 
         return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -i \"{InputFile}\" "
-            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? "-c:v h264_" + encoder + " " : "")} -preset {preset} \"{s.OutputFile}\""));
+            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? $"-c:v {Encoder}_" + graphicEncoder : $"-c:v {Encoder}")} -preset {preset} \"{s.OutputFile}\""));
     }
 
     public void SetData(string inputFile, List<Split> splits)
@@ -108,6 +109,8 @@ internal class Render
         try
         {
             await Engine.ExecuteAsync(GetArguments(), cts.Token);
+
+            StateRender = StateRender.Idle;
         }
         catch(TaskCanceledException ex)
         {
@@ -120,8 +123,6 @@ internal class Render
             LastErrorMessage = ex.Message;
         }
 
-        if(StateRender == StateRender.Running)
-            StateRender = StateRender.Idle;
         Engine.Progress -= OnProgress;
     }
 

@@ -62,6 +62,7 @@
             mediumToolStripMenuItem = new ToolStripMenuItem();
             slowToolStripMenuItem = new ToolStripMenuItem();
             slowerToolStripMenuItem = new ToolStripMenuItem();
+            encoderToolStripMenuItem = new ToolStripMenuItem();
             toolStripMenuItem1 = new ToolStripMenuItem();
             panelPlayerVideo = new Panel();
             panelPlayerButtons = new Panel();
@@ -76,6 +77,7 @@
             statusBar_Information = new ToolStripStatusLabel();
             statusBar_Empty = new ToolStripStatusLabel();
             statusBar_Copyright = new ToolStripStatusLabel();
+            encodersToolStrip = new List<ToolStripMenuItem>();
             menuStrip1.SuspendLayout();
             panelPlayerButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).BeginInit();
@@ -289,7 +291,7 @@
             // 
             // optionsToolStripMenuItem
             // 
-            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem });
+            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem, encoderToolStripMenuItem });
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             optionsToolStripMenuItem.Size = new Size(56, 20);
             optionsToolStripMenuItem.Text = "&Option";
@@ -298,7 +300,7 @@
             // 
             presetToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ultrafastToolStripMenuItem, superfastToolStripMenuItem, veryFastToolStripMenuItem, fasterToolStripMenuItem, fastToolStripMenuItem, mediumToolStripMenuItem, slowToolStripMenuItem, slowerToolStripMenuItem });
             presetToolStripMenuItem.Name = "presetToolStripMenuItem";
-            presetToolStripMenuItem.Size = new Size(106, 22);
+            presetToolStripMenuItem.Size = new Size(180, 22);
             presetToolStripMenuItem.Text = "&Preset";
             // 
             // ultrafastToolStripMenuItem
@@ -356,6 +358,12 @@
             slowerToolStripMenuItem.Size = new Size(126, 22);
             slowerToolStripMenuItem.Text = "S&lower";
             slowerToolStripMenuItem.Click += slowerToolStripMenuItem_Click;
+            // 
+            // encoderToolStripMenuItem
+            // 
+            encoderToolStripMenuItem.Name = "encoderToolStripMenuItem";
+            encoderToolStripMenuItem.Size = new Size(180, 22);
+            encoderToolStripMenuItem.Text = "&Encoder";
             // 
             // toolStripMenuItem1
             // 
@@ -565,5 +573,7 @@
         private ToolStripStatusLabel statusBar_Copyright;
         private ToolStripStatusLabel statusBar_Empty;
         private ToolStripProgressBar statusBar_ProgressBar;
+        private ToolStripMenuItem encoderToolStripMenuItem;
+        private List<ToolStripMenuItem> encodersToolStrip;
     }
 }

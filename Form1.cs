@@ -7,17 +7,16 @@ namespace ffmpegGui_SimpleCut
 {
     public partial class Form1 : Form
     {
-        private FormLoading FormLoading = new FormLoading();
-        private ListSplits ListSplits = new ListSplits();
+        private readonly FormLoading FormLoading = new FormLoading();
+        private readonly ListSplits ListSplits = new ListSplits();
+        private readonly Render Render = new Render();
 
         private string FileName = "";
         private System.Timers.Timer Timer;
-        private Render render;
         private float TotalDuration;
         private bool PlayerStopped = true;
-        private Preset Preset;
 
-        private LibVLC _libVLC;
+        private LibVLC LibVLC;
         private MediaPlayer MediaPlayer;
 
         private SynchronizationContext _ui;
@@ -34,7 +33,7 @@ namespace ffmpegGui_SimpleCut
             FileName = filename;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
             // Display loading
             FormLoading.Text = Text;
@@ -52,8 +51,8 @@ namespace ffmpegGui_SimpleCut
                 checkBox_useGC.Enabled = false;
 
             // Initialize LibVLC
-            _libVLC = new LibVLC();
-            MediaPlayer = new MediaPlayer(_libVLC)
+            LibVLC = new LibVLC();
+            MediaPlayer = new MediaPlayer(LibVLC)
             {
                 Hwnd = panelPlayerVideo.Handle
             };
@@ -73,11 +72,40 @@ namespace ffmpegGui_SimpleCut
             }
 
             FormLoading.Close();
+
+            // Initialize encoders list
+            statusBar_Information.Text = "Loading encoders...";
+            List<Encoder> encoders = await MediaInfo.GetEncodersList();
+
+            foreach(Encoder encoder in encoders)
+            {
+                ToolStripItem item = encoderToolStripMenuItem.DropDownItems.Add(encoder.Name);
+                item.Name = encoder.Value;
+                item.ToolTipText = encoder.Value;
+                item.Click += encoderToolStripMenuItem_Click;
+
+                encodersToolStrip.Add((ToolStripMenuItem)item);
+            }
+
+            if(encoders.Count > 0)
+            {
+                Render.Encoder = "h264";
+                ToolStripMenuItem? item = encodersToolStrip.FirstOrDefault(a => a.Name == Render.Encoder);
+
+                if(item != null)
+                    item.Checked = true;
+            }
+            else
+            {
+                encoderToolStripMenuItem.Enabled = false;
+            }
+
+            statusBar_Information.Text = "Ready!";
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(render?.StateRender == StateRender.Running)
+            if(Render.StateRender == StateRender.Running)
             {
                 e.Cancel = true;
                 MessageBox.Show("A render is running. You must cancel this before to quit.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -85,15 +113,15 @@ namespace ffmpegGui_SimpleCut
             else
             {
                 MediaPlayer?.Dispose();
-                _libVLC?.Dispose();
+                LibVLC?.Dispose();
             }
         }
 
         private void LoadVideo()
         {
-            if(_libVLC != null)
+            if(LibVLC != null)
             {
-                using var media = new Media(_libVLC, FileName);
+                using var media = new Media(LibVLC, FileName);
                 MediaPlayer.Play(media);
                 MediaPlayer.SetPause(true);
                 MediaPlayer.Position = 0;
@@ -128,14 +156,12 @@ namespace ffmpegGui_SimpleCut
         private async void btn_Start_Click(object sender, EventArgs e)
         {
             // To cancel render
-            if(render != null && render.StateRender == StateRender.Running)
+            if(Render.StateRender == StateRender.Running)
             {
-                render.Stop();
+                Render.Stop();
                 SetStatePlayer(true);
                 return;
             }
-
-            render = new Render();
 
             if(String.IsNullOrEmpty(FileName))
             {
@@ -191,15 +217,14 @@ namespace ffmpegGui_SimpleCut
             bool getArgsOnly = ModifierKeys == Keys.Shift;
 
             ListSplits.InitializeNames(FileName);
-            render.SetData(FileName, ListSplits.ToList());
-            render.UseGraphicCard = checkBox_useGC.Checked;
-            render.Preset = Preset;
-            TotalDuration = render.GetTotalDuration();
-            await render.DetectAndSetValue();
+            Render.SetData(FileName, ListSplits.ToList());
+            Render.UseGraphicCard = checkBox_useGC.Checked;
+            TotalDuration = Render.GetTotalDuration();
+            await Render.DetectAndSetValue();
 
             if(getArgsOnly)
             {
-                Clipboard.SetText(Render.FFmpeg + render.GetArguments());
+                Clipboard.SetText(Render.FFmpeg + Render.GetArguments());
                 MessageBox.Show("ffmpeg command copied in clipboard");
                 return;
             }
@@ -218,7 +243,7 @@ namespace ffmpegGui_SimpleCut
             SetStatePlayer(false);
             statusBar_ProgressBar.Visible = true;
 
-            await render.Execute();
+            await Render.Execute();
 
             Timer.Enabled = false;
             btn_Start.Text = oldText;
@@ -226,22 +251,22 @@ namespace ffmpegGui_SimpleCut
             SetStatePlayer(true);
             statusBar_ProgressBar.Visible = false;
 
-            if(render.StateRender == StateRender.Cancelled)
+            if(Render.StateRender == StateRender.Cancelled)
             {
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
                 DisplayInfo("Render cancelled!");
 
-                foreach(Split split in render.GetSplits())
+                foreach(Split split in Render.GetSplits())
                 {
                     await FileUtils.DeleteFile(split.OutputFile);
                 }
             }
-            else if(render.StateRender == StateRender.Error)
+            else if(Render.StateRender == StateRender.Error)
             {
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Error);
                 DisplayInfo("Error on render!");
 
-                MessageBox.Show($"FFmpeg was killed! ({render.LastErrorMessage})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"FFmpeg was killed! ({Render.LastErrorMessage})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
@@ -277,9 +302,12 @@ namespace ffmpegGui_SimpleCut
 
         private async void Form1_DragDrop(object sender, DragEventArgs e)
         {
+            if(e.Data == null)
+                return;
+
             if(!e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                this.Invalidate();
+                Invalidate();
                 return;
             }
 
@@ -405,14 +433,14 @@ namespace ffmpegGui_SimpleCut
 
         private void UpdateTextRender()
         {
-            if(render?.Progress != null && render.StateRender == StateRender.Running)
+            if(Render.StateRender == StateRender.Running)
             {
-                var time = render.Progress.ProcessedDuration;
+                var time = Render.Progress.ProcessedDuration;
                 string strTime = time.Hours + "h"
                     + (time.Minutes < 10 ? "0" : "") + time.Minutes + ":"
                     + (time.Seconds < 10 ? "0" : "") + time.Seconds;
 
-                DisplayInfo($"{render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)");
+                DisplayInfo($"{Render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)");
 
                 statusBar_ProgressBar.Maximum = (int)TotalDuration;
                 statusBar_ProgressBar.Value = (int)time.TotalSeconds;
@@ -424,16 +452,16 @@ namespace ffmpegGui_SimpleCut
 
         private void UpdatePresetOptions(Preset preset)
         {
-            Preset = preset;
+            Render.Preset = preset;
 
-            ultrafastToolStripMenuItem.Checked = Preset == Preset.UltraFast;
-            superfastToolStripMenuItem.Checked = Preset == Preset.SuperFast;
-            veryFastToolStripMenuItem.Checked = Preset == Preset.VeryFast;
-            fasterToolStripMenuItem.Checked = Preset == Preset.Faster;
-            fastToolStripMenuItem.Checked = Preset == Preset.Fast;
-            mediumToolStripMenuItem.Checked = Preset == Preset.Medium;
-            slowToolStripMenuItem.Checked = Preset == Preset.Slow;
-            slowerToolStripMenuItem.Checked = Preset == Preset.Slower;
+            ultrafastToolStripMenuItem.Checked = preset == Preset.UltraFast;
+            superfastToolStripMenuItem.Checked = preset == Preset.SuperFast;
+            veryFastToolStripMenuItem.Checked = preset == Preset.VeryFast;
+            fasterToolStripMenuItem.Checked = preset == Preset.Faster;
+            fastToolStripMenuItem.Checked = preset == Preset.Fast;
+            mediumToolStripMenuItem.Checked = preset == Preset.Medium;
+            slowToolStripMenuItem.Checked = preset == Preset.Slow;
+            slowerToolStripMenuItem.Checked = preset == Preset.Slower;
         }
 
         private void UpdateTextTime()
@@ -497,6 +525,17 @@ namespace ffmpegGui_SimpleCut
         private void slowerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UpdatePresetOptions(Preset.Slower);
+        }
+
+        private void encoderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach(ToolStripMenuItem encoder in encodersToolStrip)
+            {
+                encoder.Checked = encoder.Pressed;
+            }
+
+            ToolStripMenuItem encoderSelected = encodersToolStrip.First(a => a.Pressed);
+            Render.Encoder = encoderSelected.Name;
         }
 
         private void toolStripMenuItem_Open_Click(object sender, EventArgs e)
