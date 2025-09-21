@@ -63,6 +63,7 @@
             slowToolStripMenuItem = new ToolStripMenuItem();
             slowerToolStripMenuItem = new ToolStripMenuItem();
             encoderToolStripMenuItem = new ToolStripMenuItem();
+            editbitrateToolStripMenuItem = new ToolStripMenuItem();
             toolStripMenuItem1 = new ToolStripMenuItem();
             panelPlayerVideo = new Panel();
             panelPlayerButtons = new Panel();
@@ -77,7 +78,6 @@
             statusBar_Information = new ToolStripStatusLabel();
             statusBar_Empty = new ToolStripStatusLabel();
             statusBar_Copyright = new ToolStripStatusLabel();
-            encodersToolStrip = new List<ToolStripMenuItem>();
             menuStrip1.SuspendLayout();
             panelPlayerButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).BeginInit();
@@ -168,9 +168,9 @@
             checkBox_useGC.AutoSize = true;
             checkBox_useGC.Location = new Point(12, 670);
             checkBox_useGC.Name = "checkBox_useGC";
-            checkBox_useGC.Size = new Size(158, 19);
+            checkBox_useGC.Size = new Size(178, 19);
             checkBox_useGC.TabIndex = 11;
-            checkBox_useGC.Text = "Render with graphic card";
+            checkBox_useGC.Text = "Render with encoder graphic";
             checkBox_useGC.UseVisualStyleBackColor = true;
             // 
             // checkBox_durationMode
@@ -291,7 +291,7 @@
             // 
             // optionsToolStripMenuItem
             // 
-            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem, encoderToolStripMenuItem });
+            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem, encoderToolStripMenuItem, editbitrateToolStripMenuItem });
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             optionsToolStripMenuItem.Size = new Size(56, 20);
             optionsToolStripMenuItem.Text = "&Option";
@@ -364,6 +364,14 @@
             encoderToolStripMenuItem.Name = "encoderToolStripMenuItem";
             encoderToolStripMenuItem.Size = new Size(180, 22);
             encoderToolStripMenuItem.Text = "&Encoder";
+            // 
+            // editbitrateToolStripMenuItem
+            // 
+            editbitrateToolStripMenuItem.Enabled = false;
+            editbitrateToolStripMenuItem.Name = "editbitrateToolStripMenuItem";
+            editbitrateToolStripMenuItem.Size = new Size(180, 22);
+            editbitrateToolStripMenuItem.Text = "Edit &bitrate";
+            editbitrateToolStripMenuItem.Click += editbitrateToolStripMenuItem_Click;
             // 
             // toolStripMenuItem1
             // 
@@ -468,7 +476,7 @@
             // statusBar_Empty
             // 
             statusBar_Empty.Name = "statusBar_Empty";
-            statusBar_Empty.Size = new Size(459, 17);
+            statusBar_Empty.Size = new Size(592, 17);
             statusBar_Empty.Spring = true;
             // 
             // statusBar_Copyright
@@ -575,5 +583,6 @@
         private ToolStripProgressBar statusBar_ProgressBar;
         private ToolStripMenuItem encoderToolStripMenuItem;
         private List<ToolStripMenuItem> encodersToolStrip;
+        private ToolStripMenuItem editbitrateToolStripMenuItem;
     }
 }

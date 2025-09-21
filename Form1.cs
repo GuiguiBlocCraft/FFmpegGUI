@@ -57,13 +57,14 @@ namespace ffmpegGui_SimpleCut
                 Hwnd = panelPlayerVideo.Handle
             };
 
-            MediaPlayer.Playing += (_, __) => _ui.Post(_ => MediaPlayer_Playing(), null);
+            MediaPlayer.Playing += (_, __) => _ui.Post(_ => {
+                MediaPlayer_Playing();
+                MediaPlayer_PositionChanged(true);
+            }, null);
             MediaPlayer.Paused += (_, __) => _ui.Post(_ => MediaPlayer_Paused(), null);
             MediaPlayer.Stopped += (_, __) => _ui.Post(_ => MediaPlayer_Stopped(), null);
             MediaPlayer.PositionChanged += (_, __) => _ui.Post(_ => MediaPlayer_PositionChanged(true), null);
             MediaPlayer.LengthChanged += (_, __) => _ui.Post(_ => MediaPlayer_LengthChanged(), null);
-
-            MediaPlayer_PositionChanged(false);
 
             // Initialize in argument
             if(!string.IsNullOrEmpty(FileName))
@@ -74,6 +75,8 @@ namespace ffmpegGui_SimpleCut
             FormLoading.Close();
 
             // Initialize encoders list
+            encodersToolStrip = new List<ToolStripMenuItem>();
+
             statusBar_Information.Text = "Loading encoders...";
             List<Encoder> encoders = await MediaInfo.GetEncodersList();
 
@@ -119,20 +122,19 @@ namespace ffmpegGui_SimpleCut
 
         private void LoadVideo()
         {
-            if(LibVLC != null)
-            {
-                using var media = new Media(LibVLC, FileName);
-                MediaPlayer.Play(media);
-                MediaPlayer.SetPause(true);
-                MediaPlayer.Position = 0;
+            MediaPlayer.Play(new Media(LibVLC, FileName));
+            MediaPlayer.SetPause(true);
+            MediaPlayer.Position = 0;
 
-                MediaPlayer_PositionChanged(true);
-                SetStatePlayer(true);
-                DisplayInfo($"File loaded: {FileName}");
+            SetStatePlayer(true);
+            DisplayInfo($"File loaded: {FileName}");
 
-                ListSplits.SetOutputDirectory(string.Empty);
-                toolStripMenuItem_Render.Enabled = true;
-            }
+            Render.SetData(FileName, new List<Split>());
+            Render.DetectAndSetValue();
+
+            ListSplits.SetOutputDirectory(string.Empty);
+            toolStripMenuItem_Render.Enabled = true;
+            editbitrateToolStripMenuItem.Enabled = true;
         }
 
         private void DisplayInfo(string str)
@@ -220,7 +222,6 @@ namespace ffmpegGui_SimpleCut
             Render.SetData(FileName, ListSplits.ToList());
             Render.UseGraphicCard = checkBox_useGC.Checked;
             TotalDuration = Render.GetTotalDuration();
-            await Render.DetectAndSetValue();
 
             if(getArgsOnly)
             {
@@ -433,7 +434,7 @@ namespace ffmpegGui_SimpleCut
 
         private void UpdateTextRender()
         {
-            if(Render.StateRender == StateRender.Running)
+            if(Render.Progress != null && Render.StateRender == StateRender.Running)
             {
                 var time = Render.Progress.ProcessedDuration;
                 string strTime = time.Hours + "h"
@@ -536,6 +537,19 @@ namespace ffmpegGui_SimpleCut
 
             ToolStripMenuItem encoderSelected = encodersToolStrip.First(a => a.Pressed);
             Render.Encoder = encoderSelected.Name;
+        }
+
+        private void editbitrateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormEditBitrate formEditBitrate = new FormEditBitrate();
+            formEditBitrate.SetValue(Render.BitRateVideo, Render.BitRateAudio);
+            DialogResult dialogResult = formEditBitrate.ShowDialog();
+
+            if(dialogResult == DialogResult.OK)
+            {
+                Render.BitRateVideo = formEditBitrate.BitrateVideo;
+                Render.BitRateAudio = formEditBitrate.BitrateAudio;
+            }
         }
 
         private void toolStripMenuItem_Open_Click(object sender, EventArgs e)

@@ -11,8 +11,8 @@ internal class Render
 
     private Engine Engine = new Engine();
     private string InputFile { get; set; }
-    private int BitRateVideo { get; set; }
-    private int BitRateAudio { get; set; }
+    public int BitRateVideo { get; set; }
+    public int BitRateAudio { get; set; }
     private List<Split> Splits { get; set; } = new List<Split>();
     public ConversionProgressEventArgs Progress { get; set; }
     private CancellationTokenSource cts = new CancellationTokenSource();
