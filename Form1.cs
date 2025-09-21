@@ -2,6 +2,7 @@ using LibVLCSharp.Shared;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 
 namespace ffmpegGui_SimpleCut
 {
@@ -104,6 +105,10 @@ namespace ffmpegGui_SimpleCut
             }
 
             statusBar_Information.Text = "Ready!";
+
+            // Set version
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            label_Version.Text = $"{version.Major}.{version.Minor}.{version.Build}";
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -479,11 +484,6 @@ namespace ffmpegGui_SimpleCut
             {
                 UpdateComponents();
             }
-        }
-
-        public void SetTitleVersion(Version version)
-        {
-            Text += $" ({version.Major}.{version.Minor}.{version.Build})";
         }
 
         #region Menu items - Preset's option

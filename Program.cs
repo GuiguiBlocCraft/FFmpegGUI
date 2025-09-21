@@ -15,7 +15,6 @@ internal static class Program
         }
 
         Form1 form = new Form1();
-        form.SetTitleVersion(typeof(Form1).Assembly.GetName().Version);
 
         if(args.Length > 0)
             form.SetFileName(Path.GetFullPath(args[0]));

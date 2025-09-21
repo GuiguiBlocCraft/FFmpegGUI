@@ -78,6 +78,7 @@
             statusBar_Information = new ToolStripStatusLabel();
             statusBar_Empty = new ToolStripStatusLabel();
             statusBar_Copyright = new ToolStripStatusLabel();
+            label_Version = new Label();
             menuStrip1.SuspendLayout();
             panelPlayerButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).BeginInit();
@@ -487,12 +488,23 @@
             statusBar_Copyright.Text = "Created by GuiguiBlocCraft";
             statusBar_Copyright.Click += statusBar_Copyright_Click;
             // 
+            // label_Version
+            // 
+            label_Version.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_Version.Enabled = false;
+            label_Version.Location = new Point(714, 29);
+            label_Version.Name = "label_Version";
+            label_Version.Size = new Size(80, 15);
+            label_Version.TabIndex = 23;
+            label_Version.TextAlign = ContentAlignment.TopRight;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 727);
+            Controls.Add(label_Version);
             Controls.Add(statusStrip);
             Controls.Add(panelPlayerButtons);
             Controls.Add(panelPlayerVideo);
@@ -584,5 +596,6 @@
         private ToolStripMenuItem encoderToolStripMenuItem;
         private List<ToolStripMenuItem> encodersToolStrip;
         private ToolStripMenuItem editbitrateToolStripMenuItem;
+        private Label label_Version;
     }
 }
