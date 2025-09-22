@@ -40,7 +40,11 @@ namespace ffmpegGui_SimpleCut
             FormLoading.Text = Text;
             FormLoading.Show();
 
+            // Set version
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
             // Initialize somes composants
+            label_Version.Text = $"{version.Major}.{version.Minor}.{version.Build}";
             openFileDialog.FileOk += OpenFileDialog_FileOk;
 
             ListSplits.Add(0, 0);
@@ -105,10 +109,6 @@ namespace ffmpegGui_SimpleCut
             }
 
             statusBar_Information.Text = "Ready!";
-
-            // Set version
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            label_Version.Text = $"{version.Major}.{version.Minor}.{version.Build}";
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
