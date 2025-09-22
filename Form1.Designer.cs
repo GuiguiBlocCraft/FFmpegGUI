@@ -395,7 +395,7 @@
             // 
             // panelPlayer
             // 
-            panelPlayer.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panelPlayer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panelPlayer.Controls.Add(btn_TakePositionEnd);
             panelPlayer.Controls.Add(btn_TakePositionStart);
             panelPlayer.Controls.Add(trackBar_Player);
@@ -433,7 +433,7 @@
             // 
             // trackBar_Player
             // 
-            trackBar_Player.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            trackBar_Player.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             trackBar_Player.Location = new Point(0, 400);
             trackBar_Player.Name = "trackBar_Player";
             trackBar_Player.Size = new Size(785, 45);
@@ -442,6 +442,7 @@
             // 
             // label_Position
             // 
+            label_Position.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label_Position.AutoSize = true;
             label_Position.Location = new Point(3, 444);
             label_Position.Name = "label_Position";
