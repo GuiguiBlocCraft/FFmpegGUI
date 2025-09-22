@@ -40,12 +40,8 @@ namespace ffmpegGui_SimpleCut
             FormLoading.Text = Text;
             FormLoading.Show();
 
-            // Set version
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-
             // Initialize somes composants
-            label_Version.Text = $"{version.Major}.{version.Minor}.{version.Build}";
-            openFileDialog.FileOk += OpenFileDialog_FileOk;
+            label_Version.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
             ListSplits.Add(0, 0);
             UpdatePresetOptions(Preset.Medium);
@@ -62,7 +58,8 @@ namespace ffmpegGui_SimpleCut
                 Hwnd = panelPlayerVideo.Handle
             };
 
-            MediaPlayer.Playing += (_, __) => _ui.Post(_ => {
+            MediaPlayer.Playing += (_, __) => _ui.Post(_ =>
+            {
                 MediaPlayer_Playing();
                 MediaPlayer_PositionChanged(true);
             }, null);
@@ -70,6 +67,7 @@ namespace ffmpegGui_SimpleCut
             MediaPlayer.Stopped += (_, __) => _ui.Post(_ => MediaPlayer_Stopped(), null);
             MediaPlayer.PositionChanged += (_, __) => _ui.Post(_ => MediaPlayer_PositionChanged(true), null);
             MediaPlayer.LengthChanged += (_, __) => _ui.Post(_ => MediaPlayer_LengthChanged(), null);
+            MediaPlayer.VolumeChanged += (_, __) => _ui.Post(_ => MediaPlayer_VolumeChanged(), null);
 
             // Initialize in argument
             if(!string.IsNullOrEmpty(FileName))
@@ -437,6 +435,11 @@ namespace ffmpegGui_SimpleCut
             trackBar_Player.Maximum = (int)MediaPlayer.Length / 1000;
         }
 
+        private void MediaPlayer_VolumeChanged()
+        {
+            DisplayInfo($"Volume set to {MediaPlayer.Volume}%");
+        }
+
         private void UpdateTextRender()
         {
             if(Render.Progress != null && Render.StateRender == StateRender.Running)
@@ -621,6 +624,33 @@ namespace ffmpegGui_SimpleCut
         {
             MediaPlayer.Position = (float)trackBar_Player.Value / trackBar_Player.Maximum;
             MediaPlayer_PositionChanged(false);
+        }
+
+        private void panelPlayerButtons_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if(e.KeyCode == Keys.Space)
+                MediaPlayer.Pause();
+            else if(e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+            {
+                if(MediaPlayer.Position == -1)
+                    return;
+
+                if(e.KeyCode == Keys.Left)
+                    MediaPlayer.Position = (MediaPlayer.Position * (MediaPlayer.Length / 1000) - 10) / MediaPlayer.Length * 1000;
+                else if(e.KeyCode == Keys.Right)
+                    MediaPlayer.Position = (MediaPlayer.Position * (MediaPlayer.Length / 1000) + 10) / MediaPlayer.Length * 1000;
+
+                if(MediaPlayer.Position > 1)
+                    MediaPlayer.Position = 1;
+                else if(MediaPlayer.Position < 0)
+                    MediaPlayer.Position = 0;
+
+                MediaPlayer_PositionChanged(true);
+            }
+            else if(e.KeyCode == Keys.Up)
+                MediaPlayer.Volume += 5;
+            else if(e.KeyCode == Keys.Down)
+                MediaPlayer.Volume -= 5;
         }
 
         #endregion

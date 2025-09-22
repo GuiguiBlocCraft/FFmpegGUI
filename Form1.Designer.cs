@@ -66,7 +66,7 @@
             editbitrateToolStripMenuItem = new ToolStripMenuItem();
             toolStripMenuItem1 = new ToolStripMenuItem();
             panelPlayerVideo = new Panel();
-            panelPlayerButtons = new Panel();
+            panelPlayer = new SelectablePanel();
             btn_TakePositionEnd = new Button();
             btn_TakePositionStart = new Button();
             trackBar_Player = new TrackBar();
@@ -80,7 +80,7 @@
             statusBar_Copyright = new ToolStripStatusLabel();
             label_Version = new Label();
             menuStrip1.SuspendLayout();
-            panelPlayerButtons.SuspendLayout();
+            panelPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).BeginInit();
             statusStrip.SuspendLayout();
             SuspendLayout();
@@ -91,7 +91,7 @@
             label1.Location = new Point(8, 91);
             label1.Name = "label1";
             label1.Size = new Size(60, 15);
-            label1.TabIndex = 3;
+            label1.TabIndex = 1;
             label1.Text = "Start from";
             // 
             // label2
@@ -100,7 +100,7 @@
             label2.Location = new Point(176, 91);
             label2.Name = "label2";
             label2.Size = new Size(18, 15);
-            label2.TabIndex = 4;
+            label2.TabIndex = 3;
             label2.Text = "to";
             // 
             // label3
@@ -119,7 +119,7 @@
             label4.Location = new Point(367, 92);
             label4.Name = "label4";
             label4.Size = new Size(50, 15);
-            label4.TabIndex = 6;
+            label4.TabIndex = 7;
             label4.Text = "seconds";
             label4.Visible = false;
             // 
@@ -128,7 +128,7 @@
             textBox_from.Location = new Point(74, 88);
             textBox_from.Name = "textBox_from";
             textBox_from.Size = new Size(96, 23);
-            textBox_from.TabIndex = 7;
+            textBox_from.TabIndex = 2;
             textBox_from.Text = "0:00:00.00";
             textBox_from.Validated += textBox_from_Validated;
             // 
@@ -137,7 +137,7 @@
             textBox_to.Location = new Point(197, 88);
             textBox_to.Name = "textBox_to";
             textBox_to.Size = new Size(96, 23);
-            textBox_to.TabIndex = 8;
+            textBox_to.TabIndex = 4;
             textBox_to.Text = "0:00:00.00";
             textBox_to.Validated += textBox_to_Validated;
             // 
@@ -146,7 +146,7 @@
             textBox_duration.Location = new Point(268, 88);
             textBox_duration.Name = "textBox_duration";
             textBox_duration.Size = new Size(96, 23);
-            textBox_duration.TabIndex = 9;
+            textBox_duration.TabIndex = 6;
             textBox_duration.Text = "0";
             textBox_duration.TextAlign = HorizontalAlignment.Right;
             textBox_duration.Visible = false;
@@ -158,7 +158,7 @@
             btn_Start.Location = new Point(326, 664);
             btn_Start.Name = "btn_Start";
             btn_Start.Size = new Size(148, 33);
-            btn_Start.TabIndex = 17;
+            btn_Start.TabIndex = 22;
             btn_Start.Text = "Start render";
             btn_Start.UseVisualStyleBackColor = true;
             btn_Start.Click += btn_Start_Click;
@@ -170,7 +170,7 @@
             checkBox_useGC.Location = new Point(12, 670);
             checkBox_useGC.Name = "checkBox_useGC";
             checkBox_useGC.Size = new Size(178, 19);
-            checkBox_useGC.TabIndex = 11;
+            checkBox_useGC.TabIndex = 21;
             checkBox_useGC.Text = "Render with encoder graphic";
             checkBox_useGC.UseVisualStyleBackColor = true;
             // 
@@ -181,10 +181,14 @@
             checkBox_durationMode.Location = new Point(12, 645);
             checkBox_durationMode.Name = "checkBox_durationMode";
             checkBox_durationMode.Size = new Size(106, 19);
-            checkBox_durationMode.TabIndex = 10;
+            checkBox_durationMode.TabIndex = 20;
             checkBox_durationMode.Text = "Duration mode";
             checkBox_durationMode.UseVisualStyleBackColor = true;
             checkBox_durationMode.CheckedChanged += checkBox_durationMode_CheckedChanged;
+            // 
+            // openFileDialog
+            // 
+            openFileDialog.FileOk += OpenFileDialog_FileOk;
             // 
             // label_Title
             // 
@@ -194,7 +198,7 @@
             label_Title.Location = new Point(302, 29);
             label_Title.Name = "label_Title";
             label_Title.Size = new Size(197, 45);
-            label_Title.TabIndex = 14;
+            label_Title.TabIndex = 0;
             label_Title.Text = "FFmpeg GUI";
             label_Title.TextAlign = ContentAlignment.TopCenter;
             // 
@@ -204,7 +208,7 @@
             lblPagination.Location = new Point(8, 123);
             lblPagination.Name = "lblPagination";
             lblPagination.Size = new Size(56, 15);
-            lblPagination.TabIndex = 9;
+            lblPagination.TabIndex = 8;
             lblPagination.Text = "Split 0 / 0";
             // 
             // btnPagePrev
@@ -212,7 +216,7 @@
             btnPagePrev.Location = new Point(93, 119);
             btnPagePrev.Name = "btnPagePrev";
             btnPagePrev.Size = new Size(75, 23);
-            btnPagePrev.TabIndex = 10;
+            btnPagePrev.TabIndex = 9;
             btnPagePrev.Text = "Previous";
             btnPagePrev.UseVisualStyleBackColor = true;
             btnPagePrev.Click += btnPagePrev_Click;
@@ -222,7 +226,7 @@
             btnPageNext.Location = new Point(174, 119);
             btnPageNext.Name = "btnPageNext";
             btnPageNext.Size = new Size(75, 23);
-            btnPageNext.TabIndex = 11;
+            btnPageNext.TabIndex = 10;
             btnPageNext.Text = "Next";
             btnPageNext.UseVisualStyleBackColor = true;
             btnPageNext.Click += btnPageNext_Click;
@@ -232,7 +236,7 @@
             btnAddList.Location = new Point(255, 119);
             btnAddList.Name = "btnAddList";
             btnAddList.Size = new Size(75, 23);
-            btnAddList.TabIndex = 12;
+            btnAddList.TabIndex = 11;
             btnAddList.Text = "Add";
             btnAddList.UseVisualStyleBackColor = true;
             btnAddList.Click += btnAddList_Click;
@@ -242,7 +246,7 @@
             btnRemoveList.Location = new Point(336, 119);
             btnRemoveList.Name = "btnRemoveList";
             btnRemoveList.Size = new Size(75, 23);
-            btnRemoveList.TabIndex = 13;
+            btnRemoveList.TabIndex = 12;
             btnRemoveList.Text = "Remove";
             btnRemoveList.UseVisualStyleBackColor = true;
             btnRemoveList.Click += btnRemoveList_Click;
@@ -301,7 +305,7 @@
             // 
             presetToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ultrafastToolStripMenuItem, superfastToolStripMenuItem, veryFastToolStripMenuItem, fasterToolStripMenuItem, fastToolStripMenuItem, mediumToolStripMenuItem, slowToolStripMenuItem, slowerToolStripMenuItem });
             presetToolStripMenuItem.Name = "presetToolStripMenuItem";
-            presetToolStripMenuItem.Size = new Size(180, 22);
+            presetToolStripMenuItem.Size = new Size(131, 22);
             presetToolStripMenuItem.Text = "&Preset";
             // 
             // ultrafastToolStripMenuItem
@@ -363,14 +367,14 @@
             // encoderToolStripMenuItem
             // 
             encoderToolStripMenuItem.Name = "encoderToolStripMenuItem";
-            encoderToolStripMenuItem.Size = new Size(180, 22);
+            encoderToolStripMenuItem.Size = new Size(131, 22);
             encoderToolStripMenuItem.Text = "&Encoder";
             // 
             // editbitrateToolStripMenuItem
             // 
             editbitrateToolStripMenuItem.Enabled = false;
             editbitrateToolStripMenuItem.Name = "editbitrateToolStripMenuItem";
-            editbitrateToolStripMenuItem.Size = new Size(180, 22);
+            editbitrateToolStripMenuItem.Size = new Size(131, 22);
             editbitrateToolStripMenuItem.Text = "Edit &bitrate";
             editbitrateToolStripMenuItem.Click += editbitrateToolStripMenuItem_Click;
             // 
@@ -383,32 +387,36 @@
             // 
             panelPlayerVideo.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panelPlayerVideo.BackColor = Color.Black;
-            panelPlayerVideo.Location = new Point(12, 158);
+            panelPlayerVideo.Location = new Point(3, 3);
             panelPlayerVideo.Name = "panelPlayerVideo";
-            panelPlayerVideo.Size = new Size(776, 400);
-            panelPlayerVideo.TabIndex = 20;
+            panelPlayerVideo.Size = new Size(780, 391);
+            panelPlayerVideo.TabIndex = 14;
+            panelPlayerVideo.TabStop = true;
             // 
-            // panelPlayerButtons
+            // panelPlayer
             // 
-            panelPlayerButtons.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panelPlayerButtons.Controls.Add(btn_TakePositionEnd);
-            panelPlayerButtons.Controls.Add(btn_TakePositionStart);
-            panelPlayerButtons.Controls.Add(trackBar_Player);
-            panelPlayerButtons.Controls.Add(label_Position);
-            panelPlayerButtons.Controls.Add(btn_VideoPlay);
-            panelPlayerButtons.Location = new Point(12, 559);
-            panelPlayerButtons.Name = "panelPlayerButtons";
-            panelPlayerButtons.Size = new Size(776, 79);
-            panelPlayerButtons.TabIndex = 21;
+            panelPlayer.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panelPlayer.Controls.Add(btn_TakePositionEnd);
+            panelPlayer.Controls.Add(btn_TakePositionStart);
+            panelPlayer.Controls.Add(trackBar_Player);
+            panelPlayer.Controls.Add(panelPlayerVideo);
+            panelPlayer.Controls.Add(label_Position);
+            panelPlayer.Controls.Add(btn_VideoPlay);
+            panelPlayer.Location = new Point(7, 149);
+            panelPlayer.Name = "panelPlayer";
+            panelPlayer.Size = new Size(786, 480);
+            panelPlayer.TabIndex = 13;
+            panelPlayer.TabStop = true;
+            panelPlayer.PreviewKeyDown += panelPlayerButtons_PreviewKeyDown;
             // 
             // btn_TakePositionEnd
             // 
             btn_TakePositionEnd.Anchor = AnchorStyles.Bottom;
             btn_TakePositionEnd.Image = Properties.Resources.CutEnd;
-            btn_TakePositionEnd.Location = new Point(410, 45);
+            btn_TakePositionEnd.Location = new Point(415, 446);
             btn_TakePositionEnd.Name = "btn_TakePositionEnd";
             btn_TakePositionEnd.Size = new Size(32, 32);
-            btn_TakePositionEnd.TabIndex = 2;
+            btn_TakePositionEnd.TabIndex = 18;
             btn_TakePositionEnd.UseVisualStyleBackColor = true;
             btn_TakePositionEnd.Click += btn_TakePositionEnd_Click;
             // 
@@ -416,39 +424,39 @@
             // 
             btn_TakePositionStart.Anchor = AnchorStyles.Bottom;
             btn_TakePositionStart.Image = Properties.Resources.CutStart;
-            btn_TakePositionStart.Location = new Point(372, 45);
+            btn_TakePositionStart.Location = new Point(377, 446);
             btn_TakePositionStart.Name = "btn_TakePositionStart";
             btn_TakePositionStart.Size = new Size(32, 32);
-            btn_TakePositionStart.TabIndex = 1;
+            btn_TakePositionStart.TabIndex = 17;
             btn_TakePositionStart.UseVisualStyleBackColor = true;
             btn_TakePositionStart.Click += btn_TakePositionStart_Click;
             // 
             // trackBar_Player
             // 
             trackBar_Player.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            trackBar_Player.Location = new Point(0, 1);
+            trackBar_Player.Location = new Point(0, 400);
             trackBar_Player.Name = "trackBar_Player";
-            trackBar_Player.Size = new Size(775, 45);
-            trackBar_Player.TabIndex = 3;
+            trackBar_Player.Size = new Size(785, 45);
+            trackBar_Player.TabIndex = 15;
             trackBar_Player.Scroll += trackBar_Player_Scroll;
             // 
             // label_Position
             // 
             label_Position.AutoSize = true;
-            label_Position.Location = new Point(3, 45);
+            label_Position.Location = new Point(3, 444);
             label_Position.Name = "label_Position";
             label_Position.Size = new Size(90, 15);
-            label_Position.TabIndex = 4;
+            label_Position.TabIndex = 19;
             label_Position.Text = "0:00:00 / 0:00:00";
             // 
             // btn_VideoPlay
             // 
             btn_VideoPlay.Anchor = AnchorStyles.Bottom;
             btn_VideoPlay.Image = Properties.Resources.Play;
-            btn_VideoPlay.Location = new Point(334, 45);
+            btn_VideoPlay.Location = new Point(339, 446);
             btn_VideoPlay.Name = "btn_VideoPlay";
             btn_VideoPlay.Size = new Size(32, 32);
-            btn_VideoPlay.TabIndex = 0;
+            btn_VideoPlay.TabIndex = 16;
             btn_VideoPlay.UseVisualStyleBackColor = true;
             btn_VideoPlay.Click += btn_VideoPlay_Click;
             // 
@@ -504,10 +512,9 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 727);
+            Controls.Add(panelPlayer);
             Controls.Add(label_Version);
             Controls.Add(statusStrip);
-            Controls.Add(panelPlayerButtons);
-            Controls.Add(panelPlayerVideo);
             Controls.Add(btnRemoveList);
             Controls.Add(btnAddList);
             Controls.Add(btnPageNext);
@@ -536,8 +543,8 @@
             DragEnter += Form1_DragEnter;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            panelPlayerButtons.ResumeLayout(false);
-            panelPlayerButtons.PerformLayout();
+            panelPlayer.ResumeLayout(false);
+            panelPlayer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).EndInit();
             statusStrip.ResumeLayout(false);
             statusStrip.PerformLayout();
@@ -576,7 +583,7 @@
         private ToolStripMenuItem slowToolStripMenuItem;
         private ToolStripMenuItem slowerToolStripMenuItem;
         private Panel panelPlayerVideo;
-        private Panel panelPlayerButtons;
+        private SelectablePanel panelPlayer;
         private Button btn_VideoPlay;
         private Label label_Position;
         private TrackBar trackBar_Player;
