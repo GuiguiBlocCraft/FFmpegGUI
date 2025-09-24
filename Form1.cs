@@ -344,7 +344,7 @@ public partial class Form1 : Form
         }
     }
 
-    #region TextBot for time insertion
+    #region TextBox for time insertion
 
     private void textBox_from_Validated(object sender, EventArgs e)
     {
