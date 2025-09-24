@@ -79,16 +79,18 @@
             statusBar_Empty = new ToolStripStatusLabel();
             statusBar_Copyright = new ToolStripStatusLabel();
             label_Version = new Label();
+            panel_SplitsControl = new Panel();
             menuStrip1.SuspendLayout();
             panelPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).BeginInit();
             statusStrip.SuspendLayout();
+            panel_SplitsControl.SuspendLayout();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(8, 91);
+            label1.Location = new Point(3, 11);
             label1.Name = "label1";
             label1.Size = new Size(60, 15);
             label1.TabIndex = 1;
@@ -97,7 +99,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(176, 91);
+            label2.Location = new Point(171, 11);
             label2.Name = "label2";
             label2.Size = new Size(18, 15);
             label2.TabIndex = 3;
@@ -106,7 +108,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(176, 91);
+            label3.Location = new Point(171, 11);
             label3.Name = "label3";
             label3.Size = new Size(91, 15);
             label3.TabIndex = 5;
@@ -116,7 +118,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(367, 92);
+            label4.Location = new Point(362, 12);
             label4.Name = "label4";
             label4.Size = new Size(50, 15);
             label4.TabIndex = 7;
@@ -125,7 +127,7 @@
             // 
             // textBox_from
             // 
-            textBox_from.Location = new Point(74, 88);
+            textBox_from.Location = new Point(69, 8);
             textBox_from.Name = "textBox_from";
             textBox_from.Size = new Size(96, 23);
             textBox_from.TabIndex = 2;
@@ -134,7 +136,7 @@
             // 
             // textBox_to
             // 
-            textBox_to.Location = new Point(197, 88);
+            textBox_to.Location = new Point(192, 8);
             textBox_to.Name = "textBox_to";
             textBox_to.Size = new Size(96, 23);
             textBox_to.TabIndex = 4;
@@ -143,7 +145,7 @@
             // 
             // textBox_duration
             // 
-            textBox_duration.Location = new Point(268, 88);
+            textBox_duration.Location = new Point(263, 8);
             textBox_duration.Name = "textBox_duration";
             textBox_duration.Size = new Size(96, 23);
             textBox_duration.TabIndex = 6;
@@ -178,7 +180,7 @@
             // 
             checkBox_durationMode.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             checkBox_durationMode.AutoSize = true;
-            checkBox_durationMode.Location = new Point(12, 645);
+            checkBox_durationMode.Location = new Point(412, 42);
             checkBox_durationMode.Name = "checkBox_durationMode";
             checkBox_durationMode.Size = new Size(106, 19);
             checkBox_durationMode.TabIndex = 20;
@@ -205,7 +207,7 @@
             // lblPagination
             // 
             lblPagination.AutoSize = true;
-            lblPagination.Location = new Point(8, 123);
+            lblPagination.Location = new Point(3, 43);
             lblPagination.Name = "lblPagination";
             lblPagination.Size = new Size(56, 15);
             lblPagination.TabIndex = 8;
@@ -213,7 +215,7 @@
             // 
             // btnPagePrev
             // 
-            btnPagePrev.Location = new Point(93, 119);
+            btnPagePrev.Location = new Point(88, 39);
             btnPagePrev.Name = "btnPagePrev";
             btnPagePrev.Size = new Size(75, 23);
             btnPagePrev.TabIndex = 9;
@@ -223,7 +225,7 @@
             // 
             // btnPageNext
             // 
-            btnPageNext.Location = new Point(174, 119);
+            btnPageNext.Location = new Point(169, 39);
             btnPageNext.Name = "btnPageNext";
             btnPageNext.Size = new Size(75, 23);
             btnPageNext.TabIndex = 10;
@@ -233,7 +235,7 @@
             // 
             // btnAddList
             // 
-            btnAddList.Location = new Point(255, 119);
+            btnAddList.Location = new Point(250, 39);
             btnAddList.Name = "btnAddList";
             btnAddList.Size = new Size(75, 23);
             btnAddList.TabIndex = 11;
@@ -243,7 +245,7 @@
             // 
             // btnRemoveList
             // 
-            btnRemoveList.Location = new Point(336, 119);
+            btnRemoveList.Location = new Point(331, 39);
             btnRemoveList.Name = "btnRemoveList";
             btnRemoveList.Size = new Size(75, 23);
             btnRemoveList.TabIndex = 12;
@@ -305,7 +307,7 @@
             // 
             presetToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ultrafastToolStripMenuItem, superfastToolStripMenuItem, veryFastToolStripMenuItem, fasterToolStripMenuItem, fastToolStripMenuItem, mediumToolStripMenuItem, slowToolStripMenuItem, slowerToolStripMenuItem });
             presetToolStripMenuItem.Name = "presetToolStripMenuItem";
-            presetToolStripMenuItem.Size = new Size(180, 22);
+            presetToolStripMenuItem.Size = new Size(131, 22);
             presetToolStripMenuItem.Text = "&Preset";
             // 
             // ultrafastToolStripMenuItem
@@ -367,14 +369,14 @@
             // codecToolStripMenuItem
             // 
             codecToolStripMenuItem.Name = "codecToolStripMenuItem";
-            codecToolStripMenuItem.Size = new Size(180, 22);
+            codecToolStripMenuItem.Size = new Size(131, 22);
             codecToolStripMenuItem.Text = "&Codec";
             // 
             // editbitrateToolStripMenuItem
             // 
             editbitrateToolStripMenuItem.Enabled = false;
             editbitrateToolStripMenuItem.Name = "editbitrateToolStripMenuItem";
-            editbitrateToolStripMenuItem.Size = new Size(180, 22);
+            editbitrateToolStripMenuItem.Size = new Size(131, 22);
             editbitrateToolStripMenuItem.Text = "Edit &bitrate";
             editbitrateToolStripMenuItem.Click += editbitrateToolStripMenuItem_Click;
             // 
@@ -402,7 +404,7 @@
             panelPlayer.Controls.Add(panelPlayerVideo);
             panelPlayer.Controls.Add(label_Position);
             panelPlayer.Controls.Add(btn_VideoPlay);
-            panelPlayer.Location = new Point(7, 149);
+            panelPlayer.Location = new Point(7, 167);
             panelPlayer.Name = "panelPlayer";
             panelPlayer.Size = new Size(786, 480);
             panelPlayer.TabIndex = 13;
@@ -507,31 +509,39 @@
             label_Version.TabIndex = 23;
             label_Version.TextAlign = ContentAlignment.TopRight;
             // 
+            // panel_SplitsControl
+            // 
+            panel_SplitsControl.Controls.Add(label1);
+            panel_SplitsControl.Controls.Add(label2);
+            panel_SplitsControl.Controls.Add(textBox_from);
+            panel_SplitsControl.Controls.Add(textBox_to);
+            panel_SplitsControl.Controls.Add(btnRemoveList);
+            panel_SplitsControl.Controls.Add(checkBox_durationMode);
+            panel_SplitsControl.Controls.Add(label3);
+            panel_SplitsControl.Controls.Add(btnAddList);
+            panel_SplitsControl.Controls.Add(textBox_duration);
+            panel_SplitsControl.Controls.Add(btnPageNext);
+            panel_SplitsControl.Controls.Add(label4);
+            panel_SplitsControl.Controls.Add(btnPagePrev);
+            panel_SplitsControl.Controls.Add(lblPagination);
+            panel_SplitsControl.Location = new Point(7, 77);
+            panel_SplitsControl.Name = "panel_SplitsControl";
+            panel_SplitsControl.Size = new Size(786, 70);
+            panel_SplitsControl.TabIndex = 24;
+            // 
             // Form1
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 727);
+            Controls.Add(panel_SplitsControl);
             Controls.Add(panelPlayer);
             Controls.Add(label_Version);
             Controls.Add(statusStrip);
-            Controls.Add(btnRemoveList);
-            Controls.Add(btnAddList);
-            Controls.Add(btnPageNext);
-            Controls.Add(btnPagePrev);
-            Controls.Add(lblPagination);
             Controls.Add(label_Title);
-            Controls.Add(label4);
-            Controls.Add(checkBox_durationMode);
             Controls.Add(checkBox_useGC);
             Controls.Add(btn_Start);
-            Controls.Add(textBox_duration);
-            Controls.Add(label3);
-            Controls.Add(textBox_to);
-            Controls.Add(textBox_from);
-            Controls.Add(label2);
-            Controls.Add(label1);
             Controls.Add(menuStrip1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
@@ -549,6 +559,8 @@
             ((System.ComponentModel.ISupportInitialize)trackBar_Player).EndInit();
             statusStrip.ResumeLayout(false);
             statusStrip.PerformLayout();
+            panel_SplitsControl.ResumeLayout(false);
+            panel_SplitsControl.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -605,5 +617,6 @@
         private List<ToolStripMenuItem> codecsToolStrip;
         private ToolStripMenuItem editbitrateToolStripMenuItem;
         private Label label_Version;
+        private Panel panel_SplitsControl;
     }
 }

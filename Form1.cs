@@ -16,6 +16,7 @@ public partial class Form1 : Form
     private System.Timers.Timer Timer;
     private float TotalDuration;
     private bool PlayerStopped = true;
+    private bool GraphicDetected = true;
 
     private LibVLC LibVLC;
     private MediaPlayer MediaPlayer;
@@ -46,10 +47,13 @@ public partial class Form1 : Form
         ListSplits.Add(0, 0);
         UpdatePresetOptions(Preset.Medium);
         UpdateComponents();
-        SetStatePlayer(false);
+        SetPanelInteract(false);
 
         if(GraphicUtil.Detect() == "")
+        {
+            GraphicDetected = false;
             checkBox_useGC.Enabled = false;
+        }
 
         // Initialize LibVLC
         LibVLC = new LibVLC();
@@ -129,7 +133,7 @@ public partial class Form1 : Form
         MediaPlayer.SetPause(true);
         MediaPlayer.Position = 0;
 
-        SetStatePlayer(true);
+        SetPanelInteract(true);
         DisplayInfo($"File loaded: {FileName}");
 
         Render.SetData(FileName, new List<Split>());
@@ -164,7 +168,7 @@ public partial class Form1 : Form
         if(Render.StateRender == StateRender.Running)
         {
             Render.Stop();
-            SetStatePlayer(true);
+            SetPanelInteract(true);
             return;
         }
 
@@ -244,7 +248,7 @@ public partial class Form1 : Form
         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate);
         DisplayInfo("Rendering...");
 
-        SetStatePlayer(false);
+        SetPanelInteract(false);
         statusBar_ProgressBar.Visible = true;
 
         await Render.Execute();
@@ -252,7 +256,7 @@ public partial class Form1 : Form
         Timer.Enabled = false;
         btn_Start.Text = oldText;
 
-        SetStatePlayer(true);
+        SetPanelInteract(true);
         statusBar_ProgressBar.Visible = false;
 
         if(Render.StateRender == StateRender.Cancelled)
@@ -666,12 +670,11 @@ public partial class Form1 : Form
             MediaPlayer.Volume -= 5;
     }
 
-    private void SetStatePlayer(bool state)
+    private void SetPanelInteract(bool state)
     {
-        trackBar_Player.Enabled = state;
-        btn_VideoPlay.Enabled = state;
-        btn_TakePositionStart.Enabled = state;
-        btn_TakePositionEnd.Enabled = state;
+        panelPlayer.Enabled = state;
+        panel_SplitsControl.Enabled = state;
+        checkBox_useGC.Enabled = GraphicDetected && state;
     }
 
     #endregion
