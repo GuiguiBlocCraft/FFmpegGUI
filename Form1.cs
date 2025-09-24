@@ -228,7 +228,7 @@ public partial class Form1 : Form
 
         if(getArgsOnly)
         {
-            Clipboard.SetText(Render.FFmpeg + Render.GetArguments());
+            Clipboard.SetText(Render.FFmpeg + " " + Render.GetArguments());
             MessageBox.Show("ffmpeg command copied in clipboard");
             return;
         }
@@ -270,7 +270,8 @@ public partial class Form1 : Form
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Error);
             DisplayInfo("Error on render!");
 
-            MessageBox.Show($"FFmpeg was killed! ({Render.LastErrorMessage})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"An ffmpeg's error was excepted!\n{Render.LastErrorMessage}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
         }
         else
         {

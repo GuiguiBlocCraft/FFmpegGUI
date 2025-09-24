@@ -29,6 +29,12 @@ internal class Render
         Progress = e;
     }
 
+    private void OnError(object sender, ConversionErrorEventArgs e)
+    {
+        StateRender = StateRender.Error;
+        LastErrorMessage = e.Exception.Message;
+    }
+
     public string GetArguments()
     {
         string graphicEncoder = "";
@@ -60,7 +66,7 @@ internal class Render
         else if(Preset == Preset.Slower)
             preset = "slower";
 
-        return $"{(UseGraphicCard ? "-hwaccel cuda " : "")} -i \"{InputFile}\" "
+        return $"{(UseGraphicCard ? "-hwaccel auto " : "")}-i \"{InputFile}\" "
             + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? $"-c:v {Encoder}_" + graphicEncoder : $"-c:v {Encoder}")} -preset {preset} \"{s.OutputFile}\""));
     }
 
@@ -105,17 +111,22 @@ internal class Render
     {
         StateRender = StateRender.Running;
         Engine.Progress += OnProgress;
+        Engine.Error += OnError;
 
         try
         {
             await Engine.ExecuteAsync(GetArguments(), cts.Token);
 
-            StateRender = StateRender.Idle;
+            if(StateRender != StateRender.Error)
+                StateRender = StateRender.Idle;
         }
         catch(TaskCanceledException ex)
         {
-            StateRender = StateRender.Cancelled;
-            LastErrorMessage = ex.Message;
+            if(StateRender != StateRender.Error)
+            {
+                StateRender = StateRender.Cancelled;
+                LastErrorMessage = ex.Message;
+            }
         }
         catch(Exception ex)
         {
@@ -124,6 +135,7 @@ internal class Render
         }
 
         Engine.Progress -= OnProgress;
+        Engine.Error -= OnError;
     }
 
     public void Stop()
