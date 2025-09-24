@@ -62,7 +62,7 @@
             mediumToolStripMenuItem = new ToolStripMenuItem();
             slowToolStripMenuItem = new ToolStripMenuItem();
             slowerToolStripMenuItem = new ToolStripMenuItem();
-            encoderToolStripMenuItem = new ToolStripMenuItem();
+            codecToolStripMenuItem = new ToolStripMenuItem();
             editbitrateToolStripMenuItem = new ToolStripMenuItem();
             toolStripMenuItem1 = new ToolStripMenuItem();
             panelPlayerVideo = new Panel();
@@ -171,7 +171,7 @@
             checkBox_useGC.Name = "checkBox_useGC";
             checkBox_useGC.Size = new Size(178, 19);
             checkBox_useGC.TabIndex = 21;
-            checkBox_useGC.Text = "Render with encoder graphic";
+            checkBox_useGC.Text = "Render with graphic encoder";
             checkBox_useGC.UseVisualStyleBackColor = true;
             // 
             // checkBox_durationMode
@@ -296,7 +296,7 @@
             // 
             // optionsToolStripMenuItem
             // 
-            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem, encoderToolStripMenuItem, editbitrateToolStripMenuItem });
+            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { presetToolStripMenuItem, codecToolStripMenuItem, editbitrateToolStripMenuItem });
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             optionsToolStripMenuItem.Size = new Size(56, 20);
             optionsToolStripMenuItem.Text = "&Option";
@@ -305,7 +305,7 @@
             // 
             presetToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ultrafastToolStripMenuItem, superfastToolStripMenuItem, veryFastToolStripMenuItem, fasterToolStripMenuItem, fastToolStripMenuItem, mediumToolStripMenuItem, slowToolStripMenuItem, slowerToolStripMenuItem });
             presetToolStripMenuItem.Name = "presetToolStripMenuItem";
-            presetToolStripMenuItem.Size = new Size(131, 22);
+            presetToolStripMenuItem.Size = new Size(180, 22);
             presetToolStripMenuItem.Text = "&Preset";
             // 
             // ultrafastToolStripMenuItem
@@ -364,17 +364,17 @@
             slowerToolStripMenuItem.Text = "S&lower";
             slowerToolStripMenuItem.Click += slowerToolStripMenuItem_Click;
             // 
-            // encoderToolStripMenuItem
+            // codecToolStripMenuItem
             // 
-            encoderToolStripMenuItem.Name = "encoderToolStripMenuItem";
-            encoderToolStripMenuItem.Size = new Size(131, 22);
-            encoderToolStripMenuItem.Text = "&Encoder";
+            codecToolStripMenuItem.Name = "codecToolStripMenuItem";
+            codecToolStripMenuItem.Size = new Size(180, 22);
+            codecToolStripMenuItem.Text = "&Codec";
             // 
             // editbitrateToolStripMenuItem
             // 
             editbitrateToolStripMenuItem.Enabled = false;
             editbitrateToolStripMenuItem.Name = "editbitrateToolStripMenuItem";
-            editbitrateToolStripMenuItem.Size = new Size(131, 22);
+            editbitrateToolStripMenuItem.Size = new Size(180, 22);
             editbitrateToolStripMenuItem.Text = "Edit &bitrate";
             editbitrateToolStripMenuItem.Click += editbitrateToolStripMenuItem_Click;
             // 
@@ -601,8 +601,8 @@
         private ToolStripStatusLabel statusBar_Copyright;
         private ToolStripStatusLabel statusBar_Empty;
         private ToolStripProgressBar statusBar_ProgressBar;
-        private ToolStripMenuItem encoderToolStripMenuItem;
-        private List<ToolStripMenuItem> encodersToolStrip;
+        private ToolStripMenuItem codecToolStripMenuItem;
+        private List<ToolStripMenuItem> codecsToolStrip;
         private ToolStripMenuItem editbitrateToolStripMenuItem;
         private Label label_Version;
     }

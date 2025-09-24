@@ -19,7 +19,7 @@ internal class Render
 
     public bool UseGraphicCard { get; set; } = false;
     public Graphic GraphicMethod { get; set; } = Graphic.Unknown;
-    public string Encoder { get; set; } = string.Empty;
+    public string Codec { get; set; } = string.Empty;
     public Preset Preset { get; set; } = Preset.Medium;
     public StateRender StateRender { get; set; } = StateRender.Idle;
     public string LastErrorMessage { get; set; }
@@ -67,7 +67,7 @@ internal class Render
             preset = "slower";
 
         return $"{(UseGraphicCard ? "-hwaccel auto " : "")}-i \"{InputFile}\" "
-            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? $"-c:v {Encoder}_" + graphicEncoder : $"-c:v {Encoder}")} -preset {preset} \"{s.OutputFile}\""));
+            + string.Join(" ", Splits.Select(s => $"-ss {s.StartPos.ToString(CultureInfo.InvariantCulture)} -t {s.Duration.ToString(CultureInfo.InvariantCulture)} -b:v {BitRateVideo} -b:a {BitRateAudio} {(UseGraphicCard ? $"-c:v {Codec}_" + graphicEncoder : $"-c:v {Codec}")} -preset {preset} \"{s.OutputFile}\""));
     }
 
     public void SetData(string inputFile, List<Split> splits)

@@ -38,10 +38,10 @@ public class MediaInfo
         return 0f;
     }
 
-    public static async Task<List<Encoder>> GetEncodersList()
+    public static async Task<List<Codec>> GetCodecsList()
     {
         string result = await ExecuteAsync("-codecs");
-        List<Encoder> encoders = new List<Encoder>();
+        List<Codec> codecs = new List<Codec>();
 
         bool listed = false;
 
@@ -60,7 +60,7 @@ public class MediaInfo
 
                 // Encode support + Video codec
                 if(supports.Length > 0 && supports[1] == "E" && supports[2] == "V" && supports[3] != "I")
-                    encoders.Add(new Encoder()
+                    codecs.Add(new Codec()
                     {
                         Value = data[1],
                         Name = data[2]
@@ -72,7 +72,7 @@ public class MediaInfo
             }
         }
 
-        return encoders;
+        return codecs;
     }
 
     private static async Task<string> ExecuteAsync(string arguments)

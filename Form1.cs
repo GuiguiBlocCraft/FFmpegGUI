@@ -77,33 +77,33 @@ public partial class Form1 : Form
 
         FormLoading.Close();
 
-        // Initialize encoders list
-        encodersToolStrip = new List<ToolStripMenuItem>();
+        // Initialize codecs list
+        codecsToolStrip = new List<ToolStripMenuItem>();
 
-        statusBar_Information.Text = "Loading encoders...";
-        List<Encoder> encoders = await MediaInfo.GetEncodersList();
+        statusBar_Information.Text = "Loading codecs...";
+        List<Codec> codecs = await MediaInfo.GetCodecsList();
 
-        foreach(Encoder encoder in encoders)
+        foreach(Codec codec in codecs)
         {
-            ToolStripItem item = encoderToolStripMenuItem.DropDownItems.Add(encoder.Name);
-            item.Name = encoder.Value;
-            item.ToolTipText = encoder.Value;
-            item.Click += encoderToolStripMenuItem_Click;
+            ToolStripItem item = codecToolStripMenuItem.DropDownItems.Add(codec.Name);
+            item.Name = codec.Value;
+            item.ToolTipText = codec.Value;
+            item.Click += codecToolStripMenuItem_Click;
 
-            encodersToolStrip.Add((ToolStripMenuItem)item);
+            codecsToolStrip.Add((ToolStripMenuItem)item);
         }
 
-        if(encoders.Count > 0)
+        if(codecs.Count > 0)
         {
-            Render.Encoder = "h264";
-            ToolStripMenuItem? item = encodersToolStrip.FirstOrDefault(a => a.Name == Render.Encoder);
+            Render.Codec = "h264";
+            ToolStripMenuItem? item = codecsToolStrip.FirstOrDefault(a => a.Name == Render.Codec);
 
             if(item != null)
                 item.Checked = true;
         }
         else
         {
-            encoderToolStripMenuItem.Enabled = false;
+            codecToolStripMenuItem.Enabled = false;
         }
 
         statusBar_Information.Text = "Ready!";
@@ -544,15 +544,15 @@ public partial class Form1 : Form
         UpdatePresetOptions(Preset.Slower);
     }
 
-    private void encoderToolStripMenuItem_Click(object sender, EventArgs e)
+    private void codecToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        foreach(ToolStripMenuItem encoder in encodersToolStrip)
+        foreach(ToolStripMenuItem codec in codecsToolStrip)
         {
-            encoder.Checked = encoder.Pressed;
+            codec.Checked = codec.Pressed;
         }
 
-        ToolStripMenuItem encoderSelected = encodersToolStrip.First(a => a.Pressed);
-        Render.Encoder = encoderSelected.Name;
+        ToolStripMenuItem codecSelected = codecsToolStrip.First(a => a.Pressed);
+        Render.Codec = codecSelected.Name;
     }
 
     private void editbitrateToolStripMenuItem_Click(object sender, EventArgs e)
