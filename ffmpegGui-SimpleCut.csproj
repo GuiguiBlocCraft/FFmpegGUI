@@ -9,6 +9,7 @@
     <Version>0.3.0</Version>
     <Authors>GuiguiBlocCraft</Authors>
     <ApplicationIcon>ffmpeg_gui.ico</ApplicationIcon>
+    <Copyright>Copyright (c) $([System.DateTime]::UtcNow.Year)</Copyright>
   </PropertyGroup>
   <ItemGroup>
     <COMReference Include="WMPLib">
