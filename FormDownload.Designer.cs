@@ -35,9 +35,9 @@
             // label_DownloadInfo
             // 
             label_DownloadInfo.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label_DownloadInfo.Location = new Point(8, 10);
+            label_DownloadInfo.Location = new Point(10, 10);
             label_DownloadInfo.Name = "label_DownloadInfo";
-            label_DownloadInfo.Size = new Size(316, 15);
+            label_DownloadInfo.Size = new Size(306, 15);
             label_DownloadInfo.TabIndex = 7;
             label_DownloadInfo.Text = "Loading";
             label_DownloadInfo.TextAlign = ContentAlignment.TopCenter;
@@ -45,9 +45,9 @@
             // progressBar
             // 
             progressBar.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            progressBar.Location = new Point(8, 29);
+            progressBar.Location = new Point(10, 29);
             progressBar.Name = "progressBar";
-            progressBar.Size = new Size(316, 23);
+            progressBar.Size = new Size(308, 23);
             progressBar.Style = ProgressBarStyle.Marquee;
             progressBar.TabIndex = 6;
             // 
@@ -55,7 +55,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(332, 62);
+            ClientSize = new Size(328, 58);
             ControlBox = false;
             Controls.Add(label_DownloadInfo);
             Controls.Add(progressBar);
