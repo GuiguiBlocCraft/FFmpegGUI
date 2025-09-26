@@ -9,7 +9,7 @@ internal class Render
     public static string FFmpeg = "ffmpeg.exe";
     public static string FFprobe = "ffprobe.exe";
 
-    private Engine Engine = new Engine();
+    private Engine Engine = new Engine(GetFullPath(FFmpeg));
     private string InputFile { get; set; }
     public int BitRateVideo { get; set; }
     public int BitRateAudio { get; set; }
@@ -141,5 +141,14 @@ internal class Render
     public void Stop()
     {
         cts.Cancel();
+    }
+
+    public static string GetFullPath(string filename)
+    {
+        string path = RegUtil.GetPath();
+
+        if(!FileUtils.IsFileExistsInPath(filename) && Directory.Exists(path))
+            return Path.Combine(path, filename);
+        return filename;
     }
 }

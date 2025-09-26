@@ -80,7 +80,7 @@ public class MediaInfo
         var p = new Process()
         {
             StartInfo = {
-                FileName = Render.FFprobe,
+                FileName = Render.GetFullPath(Render.FFprobe),
                 Arguments = "-hide_banner " + arguments,
                 UseShellExecute = false,
                 CreateNoWindow = true,

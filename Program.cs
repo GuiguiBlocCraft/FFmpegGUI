@@ -8,10 +8,12 @@ internal static class Program
         ApplicationConfiguration.Initialize();
 
         // Check ffmpeg and ffprobe
-        if(!FileUtils.IsFileExistsInPath(Render.FFmpeg) || !FileUtils.IsFileExistsInPath(Render.FFprobe))
+        if(!FileUtils.CheckFFmpeg())
         {
-            MessageBox.Show("FFmpeg was not found in your PATH. Please install it before launch this app.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Environment.Exit(1);
+            Application.Run(new DialogDownload());
+
+            if(!FileUtils.CheckFFmpeg())
+                Environment.Exit(0);
         }
 
         Form1 form = new Form1();

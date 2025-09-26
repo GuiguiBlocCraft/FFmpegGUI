@@ -56,4 +56,13 @@ internal class FileUtils
             }
         }
     }
+
+    public static bool CheckFFmpeg()
+    {
+        string fileFFmpeg = Render.GetFullPath(Render.FFmpeg);
+        string fileFFprobe = Render.GetFullPath(Render.FFprobe);
+
+        return IsFileExistsInPath(Render.FFmpeg) && IsFileExistsInPath(Render.FFprobe)
+            || File.Exists(fileFFmpeg) && File.Exists(fileFFprobe);
+    }
 }
