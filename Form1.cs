@@ -244,6 +244,9 @@ public partial class Form1 : Form
         Timer.Elapsed += (_, __) => _ui.Post(_ => UpdateTextRender(), null);
         Timer.Enabled = true;
 
+        if(MediaPlayer.IsPlaying)
+            MediaPlayer.Pause();
+
         btn_Start.Text = "Cancel render";
         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate);
         DisplayInfo("Rendering...");
@@ -452,7 +455,8 @@ public partial class Form1 : Form
 
     private void MediaPlayer_VolumeChanged()
     {
-        DisplayInfo($"Volume set to {MediaPlayer.Volume}%");
+        if(MediaPlayer.Volume > 0)
+            DisplayInfo($"Volume set to {MediaPlayer.Volume}%");
     }
 
     #endregion
