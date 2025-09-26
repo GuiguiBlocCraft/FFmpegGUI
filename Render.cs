@@ -15,7 +15,7 @@ internal class Render
     public int BitRateAudio { get; set; }
     private List<Split> Splits { get; set; } = new List<Split>();
     public ConversionProgressEventArgs Progress { get; set; }
-    private CancellationTokenSource cts = new CancellationTokenSource();
+    private CancellationTokenSource cts { get; set; }
 
     public bool UseGraphicCard { get; set; } = false;
     public Graphic GraphicMethod { get; set; } = Graphic.Unknown;
@@ -112,6 +112,8 @@ internal class Render
         StateRender = StateRender.Running;
         Engine.Progress += OnProgress;
         Engine.Error += OnError;
+
+        cts = new CancellationTokenSource();
 
         try
         {
