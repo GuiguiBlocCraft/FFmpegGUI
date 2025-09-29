@@ -14,7 +14,7 @@ internal class Render
     public int BitRateVideo { get; set; }
     public int BitRateAudio { get; set; }
     private List<Split> Splits { get; set; } = new List<Split>();
-    public ConversionProgressEventArgs Progress { get; set; }
+    public EventHandler<ConversionProgressEventArgs> OnProgress;
     private CancellationTokenSource cts { get; set; }
 
     public bool UseGraphicCard { get; set; } = false;
@@ -23,11 +23,6 @@ internal class Render
     public Preset Preset { get; set; } = Preset.Medium;
     public StateRender StateRender { get; set; } = StateRender.Idle;
     public string LastErrorMessage { get; set; }
-
-    private void OnProgress(object sender, ConversionProgressEventArgs e)
-    {
-        Progress = e;
-    }
 
     private void OnError(object sender, ConversionErrorEventArgs e)
     {

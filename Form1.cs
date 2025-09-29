@@ -1,3 +1,4 @@
+using FFmpeg.NET.Events;
 using LibVLCSharp.Shared;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Diagnostics;
@@ -13,10 +14,10 @@ public partial class Form1 : Form
     private readonly Render Render = new Render();
 
     private string FileName = "";
-    private System.Timers.Timer Timer;
     private float TotalDuration;
     private bool PlayerStopped = true;
     private bool GraphicDetected = true;
+    private bool PreventTextTime = false;
 
     private LibVLC LibVLC;
     private MediaPlayer MediaPlayer;
@@ -239,10 +240,10 @@ public partial class Form1 : Form
 
         string oldText = btn_Start.Text;
 
-        Timer = new System.Timers.Timer();
-        Timer.Interval = 100;
-        Timer.Elapsed += (_, __) => _ui.Post(_ => UpdateTextRender(), null);
-        Timer.Enabled = true;
+        Render.OnProgress += (object sender, ConversionProgressEventArgs e) =>
+        {
+            _ui.Post(_ => UpdateTextRender(e), null);
+        };
 
         if(MediaPlayer.IsPlaying)
             MediaPlayer.Pause();
@@ -252,11 +253,13 @@ public partial class Form1 : Form
         DisplayInfo("Rendering...");
 
         SetPanelInteract(false);
+        statusBar_ProgressBar.Value = 0;
         statusBar_ProgressBar.Visible = true;
+
+        PreventTextTime = false;
 
         await Render.Execute();
 
-        Timer.Enabled = false;
         btn_Start.Text = oldText;
 
         SetPanelInteract(true);
@@ -461,22 +464,32 @@ public partial class Form1 : Form
 
     #endregion
 
-    private void UpdateTextRender()
+    private void UpdateTextRender(ConversionProgressEventArgs e)
     {
-        if(Render.Progress != null && Render.StateRender == StateRender.Running)
+        if(Render.StateRender == StateRender.Running)
         {
-            var time = Render.Progress.ProcessedDuration;
+            TimeSpan time = e.ProcessedDuration;
             string strTime = time.Hours + "h"
                 + (time.Minutes < 10 ? "0" : "") + time.Minutes + ":"
                 + (time.Seconds < 10 ? "0" : "") + time.Seconds;
 
-            DisplayInfo($"{Render.Progress.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)");
+            DisplayInfo($"{e.Fps} fps - {strTime} ({Math.Floor(time.TotalSeconds / TotalDuration * 100)}%)");
 
-            statusBar_ProgressBar.Maximum = (int)TotalDuration;
-            statusBar_ProgressBar.Value = (int)time.TotalSeconds;
+            if(time.TotalSeconds > 0 || !PreventTextTime)
+            {
+                statusBar_ProgressBar.Maximum = (int)TotalDuration;
+                statusBar_ProgressBar.Value = (int)time.TotalSeconds;
 
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
-            TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, (int)TotalDuration);
+                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
+                TaskbarManager.Instance.SetProgressValue((int)time.TotalSeconds, (int)TotalDuration);
+
+                PreventTextTime = true; // Prevent is timer set to zero at the end
+            }
+            else
+            {
+                statusBar_ProgressBar.Value = (int)TotalDuration;
+                TaskbarManager.Instance.SetProgressValue(1, 1);
+            }
         }
     }
 
