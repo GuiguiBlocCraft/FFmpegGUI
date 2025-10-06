@@ -458,7 +458,7 @@ public partial class Form1 : Form
 
     private void MediaPlayer_VolumeChanged()
     {
-        if(MediaPlayer.Volume > 0)
+        if(MediaPlayer.Volume >= 0)
             DisplayInfo($"Volume set to {MediaPlayer.Volume}%");
     }
 
@@ -681,7 +681,7 @@ public partial class Form1 : Form
 
             MediaPlayer_PositionChanged(true);
         }
-        else if(e.KeyCode == Keys.Up)
+        else if(e.KeyCode == Keys.Up && MediaPlayer.Volume < 200)
             MediaPlayer.Volume += 5;
         else if(e.KeyCode == Keys.Down)
             MediaPlayer.Volume -= 5;
