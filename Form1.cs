@@ -691,6 +691,7 @@ public partial class Form1 : Form
     {
         panelPlayer.Enabled = state;
         panel_SplitsControl.Enabled = state;
+        btn_Start.Enabled = state;
         checkBox_useGC.Enabled = GraphicDetected && state;
     }
 
