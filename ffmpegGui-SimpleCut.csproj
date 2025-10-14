@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>0.3.0</Version>
+    <Version>0.3.0-hotfix</Version>
     <Authors>GuiguiBlocCraft</Authors>
     <ApplicationIcon>ffmpeg_gui.ico</ApplicationIcon>
     <Copyright>Copyright (c) $([System.DateTime]::UtcNow.Year)</Copyright>
